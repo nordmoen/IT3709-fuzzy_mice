@@ -2,6 +2,10 @@
 
 LINGVAR = 'lingvar'
 FUZZYSET = 'fuzzyset'
+TRAPEZ = 'trapez'
+TRIANGLE = 'triangle'
+GRADE = 'grade'
+REVERSE_GRADE = 'reverse_grade'
 
 def parse_file(file):
     '''Parse the given file into fuzzy rules and states,
@@ -32,6 +36,11 @@ def __parse_if_statement(line, var, l_numb=None):
         __raise_parse_exp(SyntaxError, 'Encountered malformed if statement', line,
                 l_numb)
     raise NotImplementedError('If parsing not implemented')
+
+def __parse_if_cond(cond):
+    '''Parse an if condition of the format (a and b) where a and b be can be
+    if conditions them self'''
+    pass
 
 def __parse_define_statement(line, var, sets, l_numb = None):
     '''Parse a define statement in the fuzzy rules format and convert it into
@@ -66,7 +75,17 @@ def __parse_define_statement(line, var, sets, l_numb = None):
                     line, l_numb)
         set_type = set_st[0].strip()
         set_value = eval(set_st[1].strip())
-        raise NotImplementedError('Meh') #TODO create proper fuzzy set values
+        if set_type == TRAPEZ:
+            raise NotImplementedError('Meh') #TODO create proper fuzzy set values
+        elif set_type == TRIANGLE:
+            raise NotImplementedError('Meh') #TODO create proper fuzzy set values
+        elif set_type == GRADE:
+            raise NotImplementedError('Meh') #TODO create proper fuzzy set values
+        elif set_type == REVERSE_GRADE:
+            raise NotImplementedError('Meh') #TODO create proper fuzzy set values
+        else:
+            __raise_parse_exp(TypeError, 'Type for fuzzyset is wrong, was {}'.format(set_type),
+                    line, l_numb)
     else:
         __raise_parse_exp(TypeError,
                 'Encountered a define type of wrong format. Was: {}'.format(d_type),
