@@ -1,4 +1,20 @@
-define lingvar health: bad, ok, good;
-define lingvar rate: small, medium, large;
-define lingvar distance: close, near, far;
-define lingvar action: attack, flee, meh;
+#Comments can be used as long as the line starts with a #
+#Each line below must end in an ";"
+#All rule statements must be on a separate line and can not breach line boundry
+
+#define can either define a lingvar or a fuzzyset
+define lingvar health: bad, ok, good
+define lingvar rate: small, medium, large
+define lingvar distance: close, near, far
+define lingvar action: attack, flee, meh
+
+#Fuzzyset can be wither triangle or trapez as variables
+define fuzzyset far: triangle = [0,0,0,0,0]
+define fuzzyset bad: trapez = [0,0,0,0,0]
+
+#IF rules are of the following form, each fuzzy statement in the if
+#can be seperated with each of the following: ["and", "or", "not"]
+#When the statement is done, there should follow a "then" and an action
+if (health is bad) and (rate is medium) then action is flee
+if (health is ok) and (distance is far) or (rate is small) then action is meh
+if (distance is small) and (rate is medium) and (health is good) then action is attack
