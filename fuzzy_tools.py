@@ -27,7 +27,10 @@ def __parse_if_statement(line, var, l_numb=None):
     if len(if_st) != 2:
         __raise_parse_exp(SyntaxError, 'Encountered malformed if statement', line,
                 l_numb)
-    if_conds = if_st.lstrip('if ')
+    if_conds = if_st[0].lstrip('if ').strip()
+    if not if_conds:
+        __raise_parse_exp(SyntaxError, 'Encountered malformed if statement', line,
+                l_numb)
     raise NotImplementedError('If parsing not implemented')
 
 def __parse_define_statement(line, var, sets, l_numb = None):
