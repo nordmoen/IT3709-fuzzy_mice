@@ -15,6 +15,6 @@ define fuzzyset health.bad: trapez = [0,0,0,0,0]
 #IF rules are of the following form, each fuzzy statement in the if
 #can be seperated with each of the following: ["and", "or", "not"]
 #When the statement is done, there should follow a "then" and an action
-if (health is bad) and (rate is medium) then action is flee
-if (health is ok) and ((distance is far) or (rate is small)) then action is meh
-if (distance is small) and (rate is medium) and (health is good) then action is attack
+if ((health is bad) and (rate is medium)) then action is flee
+if ((health is ok) and ((distance is far) or (rate is small))) then action is meh
+if ((distance is small) and ((rate is medium) and (health is good))) then action is attack
