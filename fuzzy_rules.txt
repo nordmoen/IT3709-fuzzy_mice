@@ -1,0 +1,4 @@
+define lingvar health: bad, ok, good;
+define lingvar rate: small, medium, large;
+define lingvar distance: close, near, far;
+define lingvar action: attack, flee, meh;
