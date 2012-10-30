@@ -1,0 +1,15 @@
+#!/usr/bin/python
+
+LINGVAR = 'lingvar'
+FUZZYSET = 'fuzzyset'
+AND = 'and'
+OR = 'or'
+TRAPEZ = 'trapez'
+TRIANGLE = 'triangle'
+GRADE = 'grade'
+REVERSE_GRADE = 'reverse_grade'
+ACTION = 'action'
+IS = 'is'
+IF = 'if'
+DEFINE = 'define'
+THEN = 'then'

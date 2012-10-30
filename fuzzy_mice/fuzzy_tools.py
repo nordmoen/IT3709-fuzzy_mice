@@ -2,17 +2,7 @@
 
 import re
 from cond_statement import CondStatement, FuzzyExpr, IfStatement
-
-LINGVAR = 'lingvar'
-FUZZYSET = 'fuzzyset'
-AND = 'and'
-OR = 'or'
-TRAPEZ = 'trapez'
-TRIANGLE = 'triangle'
-GRADE = 'grade'
-REVERSE_GRADE = 'reverse_grade'
-ACTION = 'action'
-IS = 'is'
+import constants as const
 
 #Regular expression compilers:
 EXPR = re.compile('\([a-z ]+ (is|not) [a-z ]+\)')
@@ -30,20 +20,20 @@ def parse_file(file):
             if l.startswith('#'):
                 #Ignore comments
                 continue
-            elif l.startswith('define'):
+            elif l.startswith(const.DEFINE):
                 __parse_define_statement(l, var, sets, i)
-            elif l.startswith('if'):
+            elif l.startswith(const.IF):
                 res.append(__parse_if_statement(l, var, sets, i))
     return res
 
 def __parse_if_statement(line, var, sets, l_numb=None):
     '''Parse an if statement in the fuzzy rules format and convert it into
     something that we can use as a fuzzy statement'''
-    if_st = line.split('then')
+    if_st = line.split(const.THEN)
     if len(if_st) != 2:
         __raise_parse_exp(SyntaxError, 'Encountered malformed if statement', line,
                 l_numb)
-    if_conds = if_st[0].lstrip('if ').strip()
+    if_conds = if_st[0].lstrip(const.IF).strip()
     if not if_conds:
         __raise_parse_exp(SyntaxError, 'Encountered malformed if statement', line,
                 l_numb)
@@ -52,9 +42,9 @@ def __parse_if_statement(line, var, sets, l_numb=None):
     if not action:
         __raise_parse_exp(SyntaxError, 'Could not find an action in expr: {}'.format(if_st[1]),
                 line, l_numb)
-    if action not in var[ACTION]:
-        __raise_parse_exp(NameError, 'Action is not defined, allowed: {}'.format(var[ACTION]),
-                line, l_numb)
+    if action not in var[const.ACTION]:
+        __raise_parse_exp(NameError, 'Action is not defined, allowed: {}'.format(
+            var[const.ACTION]), line, l_numb)
     return IfStatement(cond_st, action)
 
 def __parse_if_cond(cond, sets):
@@ -63,11 +53,11 @@ def __parse_if_cond(cond, sets):
     expr = EXPR.match(cond)
     if expr:
         expr_st = expr.group()[1:-1].split(' ')
-        func = (lambda x: x) if expr_st[1] == IS else (lambda x: 1.0 - x)
+        func = (lambda x: x) if expr_st[1] == const.IS else (lambda x: 1.0 - x)
         return FuzzyExpr(expr_st[0], sets[expr_st[2]], func)
     else:
         a, b = __parse_if_helper(cond[1:-1])
-        and1 = cond[1:len(a) + 1 + 4].strip() == AND
+        and1 = cond[1:len(a) + 1 + 4].strip() == const.AND
         if and1:
             func = min
         else:
@@ -102,14 +92,14 @@ def __parse_define_statement(line, var, sets, l_numb = None):
         __raise_parse_exp(SyntaxError, 'Encountered a malformed "define" statement',
                 line, l_numb)
     d_type = d_st[1]
-    if d_type == LINGVAR:
+    if d_type == const.LINGVAR:
         var_vals = define_vars[1].split(',')
         current_var = d_st[2].strip()
         if current_var not in var:
             var[current_var] = []
         for value in var_vals:
             var[current_var].append(value.strip())
-    elif d_type == FUZZYSET:
+    elif d_type == const.FUZZYSET:
         current_var = d_st[2].strip().split('.')
         if current_var[0] not in var and current_var[1] not in var[current_var[0]]:
             __raise_parse_exp(NameError, 'Variable({}) referenced before creation'.format(current_var),
@@ -121,13 +111,13 @@ def __parse_define_statement(line, var, sets, l_numb = None):
                     line, l_numb)
         set_type = set_st[0].strip()
         set_value = eval(set_st[1].strip())
-        if set_type == TRAPEZ:
+        if set_type == const.TRAPEZ:
             raise NotImplementedError('Meh') #TODO create proper fuzzy set values
-        elif set_type == TRIANGLE:
+        elif set_type == const.TRIANGLE:
             raise NotImplementedError('Meh') #TODO create proper fuzzy set values
-        elif set_type == GRADE:
+        elif set_type == const.GRADE:
             raise NotImplementedError('Meh') #TODO create proper fuzzy set values
-        elif set_type == REVERSE_GRADE:
+        elif set_type == const.REVERSE_GRADE:
             raise NotImplementedError('Meh') #TODO create proper fuzzy set values
         else:
             __raise_parse_exp(TypeError, 'Type for fuzzyset is wrong, was {}'.format(set_type),

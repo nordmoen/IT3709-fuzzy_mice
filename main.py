@@ -4,12 +4,11 @@ import sys
 import math
 from PySide import QtCore, QtGui
 from fuzzy_mice.mouse import Mouse
+from fuzzy_mice import fuzzy_tools
 
 import fuzzy_mice.mice_rc
 
 if __name__ == '__main__':
-
-
     MouseCount = 7
 
     app = QtGui.QApplication(sys.argv)
