@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import re
-from cond_statement import CondStatement, FuzzyExpr
+from cond_statement import CondStatement, FuzzyExpr, IfStatement
 
 LINGVAR = 'lingvar'
 FUZZYSET = 'fuzzyset'
@@ -11,6 +11,8 @@ TRAPEZ = 'trapez'
 TRIANGLE = 'triangle'
 GRADE = 'grade'
 REVERSE_GRADE = 'reverse_grade'
+ACTION = 'action'
+IS = 'is'
 
 #Regular expression compilers:
 EXPR = re.compile('\([a-z ]+ (is|not) [a-z ]+\)')
@@ -21,6 +23,7 @@ def parse_file(file):
     fuzzy logic.'''
     var = {} #Variables in the rules
     sets = {} #Dict between variables in var to values
+    res = []
     with open(file, 'r') as f:
         for i, line in enumerate(f):
             l = line.lower().strip()
@@ -28,9 +31,10 @@ def parse_file(file):
                 #Ignore comments
                 continue
             elif l.startswith('define'):
-                res = __parse_define_statement(l, var, sets, i)
+                __parse_define_statement(l, var, sets, i)
             elif l.startswith('if'):
-                res = __parse_if_statement(l, var, sets, i)
+                res.append(__parse_if_statement(l, var, sets, i))
+    return res
 
 def __parse_if_statement(line, var, sets, l_numb=None):
     '''Parse an if statement in the fuzzy rules format and convert it into
@@ -43,15 +47,23 @@ def __parse_if_statement(line, var, sets, l_numb=None):
     if not if_conds:
         __raise_parse_exp(SyntaxError, 'Encountered malformed if statement', line,
                 l_numb)
-    raise NotImplementedError('If parsing not implemented')
+    cond_st = __parse_if_cond(if_conds, sets)
+    action = if_st[1].split(' ')[-1]#Get the last element of the "action is act" line
+    if not action:
+        __raise_parse_exp(SyntaxError, 'Could not find an action in expr: {}'.format(if_st[1]),
+                line, l_numb)
+    if action not in var[ACTION]:
+        __raise_parse_exp(NameError, 'Action is not defined, allowed: {}'.format(var[ACTION]),
+                line, l_numb)
+    return IfStatement(cond_st, action)
 
-def __parse_if_cond(cond, var, sets):
+def __parse_if_cond(cond, sets):
     #convert from "((a is A) and (b is B))" to "(a is A) and (b is B)"
     #Extract the two conditions in the expression
     expr = EXPR.match(cond)
     if expr:
         expr_st = expr.group()[1:-1].split(' ')
-        func = (lambda x: x) if expr_st[1] == 'is' else (lambda x: 1.0 - x)
+        func = (lambda x: x) if expr_st[1] == IS else (lambda x: 1.0 - x)
         return FuzzyExpr(expr_st[0], sets[expr_st[2]], func)
     else:
         a, b = __parse_if_helper(cond[1:-1])
