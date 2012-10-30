@@ -99,6 +99,9 @@ def __parse_define_statement(line, var, sets, l_numb = None):
         current_var = d_st[2].strip()
         if current_var not in var:
             var[current_var] = []
+        else:
+            __raise_parse_exp(SyntaxWarning, 'Variable({}) is already defined!'.format(current_var),
+                    line, l_numb)
         for value in var_vals:
             var[current_var].append(value.strip())
     elif d_type == const.FUZZYSET:
@@ -106,6 +109,9 @@ def __parse_define_statement(line, var, sets, l_numb = None):
         current_v = d_st[2].strip()
         if current_var[0] not in var and current_var[1] not in var[current_var[0]]:
             __raise_parse_exp(NameError, 'Variable({}) referenced before creation'.format(current_var),
+                    line, l_numb)
+        if current_v in sets:
+            __raise_parse_exp(SyntaxWarning, 'Variable({}) already defined'.format(current_v),
                     line, l_numb)
         set_st = define_vars[1].split('=')
         if len(set_st) != 2:
