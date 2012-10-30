@@ -41,10 +41,9 @@ class FuzzyExpr(object):
         self.new_value = None
 
     def calc(self):
-        try:
-            return self.func(self.value.eval(self.new_value))
-        except AttributeError:
+        if self.new_value == None:
             raise RuntimeError('Calc() called on expression without a new_value set')
+        return self.func(self.value.eval(self.new_value))
 
     def __str__(self):
         func_str = 'is' if not self.func else 'not'
