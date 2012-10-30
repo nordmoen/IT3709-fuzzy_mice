@@ -30,7 +30,7 @@ class FuzzyTriangle(object):
             #Value is outside of this triangle so just return 0.0
             return 0.0
 
-class FuzzyTrapez(objec):
+class FuzzyTrapeze(object):
     '''A fuzzy set implementation which represents a trapeze in a two
     dimensional graph'''
     def __init__(self, left, top_left, top_right, right):
@@ -63,7 +63,7 @@ class FuzzyGradient(object):
             / All this is within the set
         else:
                               \
-        All this is within     \'''
+        All this is within     \ '''
         self.reverse = left[1] < right[1]
         self.x1 = left[0]
         self.x2 = right[0]

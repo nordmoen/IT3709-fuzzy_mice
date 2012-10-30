@@ -8,8 +8,13 @@ define lingvar distance: close, near, far
 define lingvar action: attack, flee, meh
 
 #Fuzzyset can be triangle or trapez as variables
-define fuzzyset distance.far: triangle = [0,0,0,0,0]
-define fuzzyset health.bad: trapez = [0,0,0,0,0]
+define fuzzyset distance.small: trapez = [(0,0), (5,0.5), (10,1), (15, 0)]
+define fuzzyset distance.far: triangle = [(0,0), (5,1), (10,0)]
+define fuzzyset health.bad: trapez = [(0,0), (5,0.5), (10,1), (15, 0)]
+define fuzzyset health.ok: triangle = [(0,0), (5,1), (10,0)]
+define fuzzyset health.good: trapez = [(0,0), (5,0.5), (10,1), (15, 0)]
+define fuzzyset rate.small: triangle = [(0,0), (5,1), (10,0)]
+define fuzzyset rate.medium: trapez = [(0,0), (5,0.5), (10,1), (15, 0)]
 
 #IF rules are of the following form, each fuzzy statement in the if
 #can be seperated with each of the following: ["and", "or"]

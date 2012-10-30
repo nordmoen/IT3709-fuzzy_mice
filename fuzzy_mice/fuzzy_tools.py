@@ -2,6 +2,7 @@
 
 import re
 from cond_statement import CondStatement, FuzzyExpr, IfStatement
+from fuzzy_sets import FuzzyTriangle, FuzzyTrapeze, FuzzyGradient
 import constants as const
 
 #Regular expression compilers:
@@ -54,16 +55,17 @@ def __parse_if_cond(cond, sets):
     if expr:
         expr_st = expr.group()[1:-1].split(' ')
         func = (lambda x: x) if expr_st[1] == const.IS else (lambda x: 1.0 - x)
-        return FuzzyExpr(expr_st[0], sets[expr_st[2]], func)
+        return FuzzyExpr(expr_st[0], sets['{0!s}.{1!s}'.format(expr_st[0],
+            expr_st[2])], func)
     else:
         a, b = __parse_if_helper(cond[1:-1])
-        and1 = cond[1:len(a) + 1 + 4].strip() == const.AND
+        and1 = cond[len(a):len(a) + 1 + 4].strip() == const.AND
         if and1:
             func = min
         else:
             func = max
-        return CondStatement(__parse_if_cond(a.strip()),
-                __parse_if_cond(b.strip()), func)
+        return CondStatement(__parse_if_cond(a.strip(), sets),
+                __parse_if_cond(b.strip(), sets), func)
 
 def __parse_if_helper(cond):
     res = []
@@ -101,6 +103,7 @@ def __parse_define_statement(line, var, sets, l_numb = None):
             var[current_var].append(value.strip())
     elif d_type == const.FUZZYSET:
         current_var = d_st[2].strip().split('.')
+        current_v = d_st[2].strip()
         if current_var[0] not in var and current_var[1] not in var[current_var[0]]:
             __raise_parse_exp(NameError, 'Variable({}) referenced before creation'.format(current_var),
                     line, l_numb)
@@ -112,16 +115,15 @@ def __parse_define_statement(line, var, sets, l_numb = None):
         set_type = set_st[0].strip()
         set_value = eval(set_st[1].strip())
         if set_type == const.TRAPEZ:
-            raise NotImplementedError('Meh') #TODO create proper fuzzy set values
+            res = FuzzyTrapeze(*set_value)
         elif set_type == const.TRIANGLE:
-            raise NotImplementedError('Meh') #TODO create proper fuzzy set values
+            res = FuzzyTriangle(*set_value)
         elif set_type == const.GRADE:
-            raise NotImplementedError('Meh') #TODO create proper fuzzy set values
-        elif set_type == const.REVERSE_GRADE:
-            raise NotImplementedError('Meh') #TODO create proper fuzzy set values
+            res = FuzzyGradient(*set_value)
         else:
             __raise_parse_exp(TypeError, 'Type for fuzzyset is wrong, was {}'.format(set_type),
                     line, l_numb)
+        sets[current_v] = res
     else:
         __raise_parse_exp(TypeError,
                 'Encountered a define type of wrong format. Was: {}'.format(d_type),
