@@ -22,7 +22,7 @@ class CondStatement(object):
         self.right.reset()
 
     def __str__(self):
-        return 'Conditional statement: {0!s} {1!s} {2!s}'.format(self.left, self.func, self.right)
+        return '(Conditional statement: {0!s} {1!s} {2!s})'.format(self.left, self.func, self.right)
 
 class FuzzyExpr(object):
     '''A class representing a fuzzy expression of the form "health is good"'''
@@ -48,4 +48,25 @@ class FuzzyExpr(object):
 
     def __str__(self):
         func_str = 'is' if not self.func else 'not'
-        return 'Fuzzy expression: {0!s} {1!s} {2!s}'.format(self.var, func_str, self.value)
+        return '(Fuzzy expression: {0!s} {1!s} {2!s})'.format(self.var, func_str, self.value)
+
+class IfStatement(object):
+    '''A class representing a fuzzy if statement of the form "if (a and|or b)
+    action is act", all fuzzy if statements fire to some degree so every if statement
+    will return some degree of truth for its condition. It can return a value between
+    [0, 1]'''
+    def __init__(self, cond, action):
+        self.cond = cond
+        self.action = action
+
+    def set_value(self, **kwargs):
+        self.cond.set_value(kwargs)
+
+    def eval(self):
+        return (self.action, self.cond.calc())
+
+    def reset(self):
+        self.cond.reset()
+
+    def __str__(self):
+        return 'IF {0!s} THEN action is {1!s}'.format(self.cond, self.action)

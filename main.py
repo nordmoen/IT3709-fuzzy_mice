@@ -3,9 +3,9 @@
 import sys
 import math
 from PySide import QtCore, QtGui
-from mouse import Mouse
+from fuzzy_mice.mouse import Mouse
 
-import mice_rc
+import fuzzy_mice.mice_rc
 
 if __name__ == '__main__':
 

@@ -13,7 +13,7 @@ GRADE = 'grade'
 REVERSE_GRADE = 'reverse_grade'
 
 #Regular expression compilers:
-EXPR = re.compile('\([a-z]+ (is|not) [a-z]+\)')
+EXPR = re.compile('\([a-z ]+ (is|not) [a-z ]+\)')
 
 def parse_file(file):
     '''Parse the given file into fuzzy rules and states,
