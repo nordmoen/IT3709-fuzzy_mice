@@ -39,14 +39,18 @@ def __parse_if_statement(line, var, sets, l_numb=None):
         __raise_parse_exp(SyntaxError, 'Encountered malformed if statement', line,
                 l_numb)
     cond_st = __parse_if_cond(if_conds, sets)
-    action = if_st[1].split(' ')[-1]#Get the last element of the "action is act" line
+    action = if_st[1].split(' ')#Get the last element of the "action is act" line
     if not action:
         __raise_parse_exp(SyntaxError, 'Could not find an action in expr: {}'.format(if_st[1]),
                 line, l_numb)
-    if action not in var[const.ACTION]:
+    if action[-1] not in var[const.ACTION]:
         __raise_parse_exp(NameError, 'Action is not defined, allowed: {}'.format(
             var[const.ACTION]), line, l_numb)
-    return IfStatement(cond_st, action)
+    set_action = '{}.{}'.format(const.ACTION, action[-1])
+    if set_action not in sets:
+        __raise_parse_exp(NameError, 'Action({}) has not got a defined set'.format(
+            set_action), line, l_numb)
+    return IfStatement(cond_st, action[-1], sets[set_action])
 
 def __parse_if_cond(cond, sets):
     #convert from "((a is A) and (b is B))" to "(a is A) and (b is B)"
