@@ -28,21 +28,24 @@ class FuzzyTriangle(object):
         left---right
         '''
         assert top[1] <= 1.0, 'Triangle is higher than 1.0'
-        self.x1 = left[0]
-        self.x2 = right[0]
-        self.top_x = top[0]
         self.l1 = create_line(left, top)
         self.l2 = create_line(top, right)
+        self.left = left
+        self.top = top
+        self.right = right
 
     def eval(self, value):
         '''Calculate how much this value is within this triangle'''
-        if self.x1 <= value <= self.top_x:
+        if self.left[0] <= value <= self.top[0]:
             return self.l1(value)
-        elif self.top_x < value <= self.x2:
+        elif self.top[0] < value <= self.right[0]:
             return self.l2(value)
         else:
             #Value is outside of this triangle so just return 0.0
             return 0.0
+    def __str__(self):
+        return 'Triangle = left:{0!s}, top:{1!s}, right:{2!s}'.format(self.left,
+                self.top, self.right)
 
 class FuzzyTrapeze(object):
     '''A fuzzy set implementation which represents a trapeze in a two
@@ -54,23 +57,27 @@ class FuzzyTrapeze(object):
                 left---------------------------right'''
         assert top_left[1] <= 1.0, 'Trapeze is larger than 1.0 in height'
         assert top_right[1] <= 1.0, 'Trapeze is larger than 1.0 in height'
-        self.x1 = left[0]
-        self.x2 = top_left[0]
-        self.x3 = top_right[0]
-        self.x4 = right[0]
         self.l1 = create_line(left, top_left)
         self.l2 = create_line(top_left, top_right)
         self.l3 = create_line(top_right, right)
+        self.left = left
+        self.top_left = top_left
+        self.top_right = top_right
+        self.right = right
 
     def eval(self, value):
-        if self.x1 <= value <= self.x2:
+        if self.left[0] <= value <= self.top_left[0]:
             return self.l1(value)
-        elif self.x2 < value <= self.x3:
+        elif self.top_left[0] < value <= self.top_right[0]:
             return self.l2(value)
-        elif self.x3 < value <= self.x4:
+        elif self.top_right[0] < value <= self.right[0]:
             return self.l3(value)
         else:
             return 0.0
+
+    def __str__(self):
+        return 'Trapezoid = left:{0!s}, top_left:{1!s}, top_right:{2!s}, right:{3!s}'.format(
+                self.left, self.top_left, self.top_right, self.right)
 
 class FuzzyGradient(object):
     '''Fuzzy set implementation representing a gradient, everything inside the
@@ -83,24 +90,27 @@ class FuzzyGradient(object):
                               \
         All this is within     \ '''
         self.reverse = left[1] < right[1]
-        self.x1 = left[0]
-        self.x2 = right[0]
         self.top = float(left[1]) if not self.reverse else float(right[1])
         assert self.top <= 1.0, 'Gradient is larger than 1.0'
         self.line = create_line(left, right)
+        self.left = left
+        self.right = right
 
     def eval(self, value):
         if not self.reverse:
-            if value <= self.x1:
+            if value <= self.left[0]:
                 return self.top
-            elif self.x1 < value <= self.x2:
+            elif self.left[0] < value <= self.right[0]:
                 return self.line(value)
             else:
                 return 0.0
         else:
-            if value >= self.x2:
+            if value >= self.right[0]:
                 return self.top
-            elif self.x1 <= value < self.x2:
+            elif self.left[0] <= value < self.right[0]:
                 return self.line(value)
             else:
                 return 0.0
+
+    def __str__(self):
+        return 'Gradient = left:{0!s}, right{1!s}'.format(self.left, self.right)

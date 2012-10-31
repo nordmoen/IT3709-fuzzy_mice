@@ -39,14 +39,14 @@ def __parse_if_statement(line, var, sets, l_numb=None):
         __raise_parse_exp(SyntaxError, 'Encountered malformed if statement', line,
                 l_numb)
     cond_st = __parse_if_cond(if_conds, sets)
-    action = if_st[1].split(' ')#Get the last element of the "action is act" line
+    action = filter(None, if_st[1].split(' '))
     if not action:
         __raise_parse_exp(SyntaxError, 'Could not find an action in expr: {}'.format(if_st[1]),
                 line, l_numb)
-    if action[-1] not in var[const.ACTION]:
+    if action[-1] not in var[action[0]]:
         __raise_parse_exp(NameError, 'Action is not defined, allowed: {}'.format(
-            var[const.ACTION]), line, l_numb)
-    set_action = '{}.{}'.format(const.ACTION, action[-1])
+            var[action[0]]), line, l_numb)
+    set_action = '{}.{}'.format(action[0], action[-1])
     if set_action not in sets:
         __raise_parse_exp(NameError, 'Action({}) has not got a defined set'.format(
             set_action), line, l_numb)
@@ -62,7 +62,7 @@ def __parse_if_cond(cond, sets):
             expr_st[2])], expr_st[1] == const.IS)
     else:
         a, b = __parse_if_helper(cond[1:-1])
-        and1 = cond[len(a):len(a) + 1 + 4].strip() == const.AND
+        and1 = cond[len(a)+1:len(a) + 1 + 4].strip() == const.AND
         if and1:
             func = min
         else:

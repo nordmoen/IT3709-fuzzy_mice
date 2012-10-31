@@ -47,7 +47,11 @@ class IfStatement(object):
         self.func = func
 
     def eval(self, **kwargs):
-        return (self.action, self.set, self.func(self.cond.eval(**kwargs)))
+        try:
+            return (self.action, self.set, self.func(self.cond.eval(**kwargs)))
+        except KeyError, e:
+            raise TypeError('Not all needed arguments was supplied. The argument' +
+                    ' {0!s} was needed, but not supplied'.format(e))
 
     def __str__(self):
         return 'IF {0!s} THEN action is {1!s}, using hedge:{2!s}'.format(self.cond,
