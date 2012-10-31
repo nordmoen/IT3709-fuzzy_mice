@@ -15,6 +15,7 @@ class FuzzyTriangle(object):
           /     \
         left---right
         '''
+        assert top[1] <= 1.0, 'Triangle is higher than 1.0'
         self.x1 = left[0]
         self.x2 = right[0]
         self.top_x = top[0]
@@ -23,9 +24,9 @@ class FuzzyTriangle(object):
     def eval(self, value):
         '''Calculate how much this value is within this triangle'''
         if self.x1 <= value <= self.top_x:
-            pass
+            raise NotImplementedError('Triangle eval not done')
         elif self.top_x < value <= self.x2:
-            pass
+            raise NotImplementedError('Triangle eval not done')
         else:
             #Value is outside of this triangle so just return 0.0
             return 0.0
@@ -38,6 +39,8 @@ class FuzzyTrapeze(object):
                     /                          \
                    /                            \
                 left---------------------------right'''
+        assert top_left[1] <= 1.0, 'Trapeze is larger than 1.0 in height'
+        assert top_right[1] <= 1.0, 'Trapeze is larger than 1.0 in height'
         self.x1 = left[0]
         self.x2 = top_left[0]
         self.x3 = top_right[0]
@@ -46,11 +49,11 @@ class FuzzyTrapeze(object):
 
     def eval(self, value):
         if self.x1 <= value <= self.x2:
-            pass
+            raise NotImplementedError('Trapeze eval not done')
         elif self.x2 < value <= self.x3:
-            pass
+            raise NotImplementedError('Trapeze eval not done')
         elif self.x3 < value <= self.x4:
-            pass
+            raise NotImplementedError('Trapeze eval not done')
         else:
             return 0.0
 
@@ -68,6 +71,7 @@ class FuzzyGradient(object):
         self.x1 = left[0]
         self.x2 = right[0]
         self.top = float(left[1]) if not self.reverse else float(right[1])
+        assert self.top <= 1.0, 'Gradient is larger than 1.0'
 
     def eval(self, value):
         if not self.reverse:
@@ -75,7 +79,7 @@ class FuzzyGradient(object):
                 return self.top
             elif self.x1 < value <= self.x2:
                 #TODO fix calculation
-                pass
+                raise NotImplementedError('Gradient eval not done')
             else:
                 return 0.0
         else:
@@ -83,6 +87,6 @@ class FuzzyGradient(object):
                 return self.top
             elif self.x1 <= value < self.x2:
                 #TODO fix calculation
-                pass
+                raise NotImplementedError('Gradient eval not done')
             else:
                 return 0.0

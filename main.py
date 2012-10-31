@@ -9,8 +9,6 @@ from fuzzy_mice import fuzzy_tools
 import fuzzy_mice.mice_rc
 
 if __name__ == '__main__':
-    MouseCount = 7
-
     app = QtGui.QApplication(sys.argv)
     QtCore.qsrand(QtCore.QTime(0,0,0).secsTo(QtCore.QTime.currentTime()))
 
@@ -18,11 +16,10 @@ if __name__ == '__main__':
     scene.setSceneRect(-300, -300, 600, 600)
     scene.setItemIndexMethod(QtGui.QGraphicsScene.NoIndex)
 
-    for i in range(MouseCount):
-        mouse = Mouse()
-        mouse.setPos(math.sin((i * 6.28) / MouseCount) * 200,
-                     math.cos((i * 6.28) / MouseCount) * 200)
-        scene.addItem(mouse)
+    mouse = Mouse(0.8, 5, 5)
+    mouse.setPos(math.sin(6.28) * 200,
+                 math.cos(6.28) * 200)
+    scene.addItem(mouse)
 
     view = QtGui.QGraphicsView(scene)
     view.setRenderHint(QtGui.QPainter.Antialiasing)
