@@ -119,7 +119,7 @@ def __parse_define_statement(line, var, sets, l_numb = None):
                     'correctly defined, was: {}'.format(set_st),
                     line, l_numb)
         set_type = set_st[0].strip()
-        set_value = eval(set_st[1].strip())
+        set_value = map(lambda x: (float(x[0]), float(x[1])), eval(set_st[1].strip()))
         if set_type == const.TRAPEZ:
             res = FuzzyTrapeze(*set_value)
         elif set_type == const.TRIANGLE:

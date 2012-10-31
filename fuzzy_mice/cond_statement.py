@@ -54,18 +54,20 @@ class IfStatement(object):
     action is act", all fuzzy if statements fire to some degree so every if statement
     will return some degree of truth for its condition. It can return a value between
     [0, 1]'''
-    def __init__(self, cond, action):
+    def __init__(self, cond, action, func = lambda x: x):
         self.cond = cond
         self.action = action
+        self.func = func
 
     def set_value(self, **kwargs):
         self.cond.set_value(kwargs)
 
     def eval(self):
-        return (self.action, self.cond.calc())
+        return (self.action, self.func(self.cond.calc()))
 
     def reset(self):
         self.cond.reset()
 
     def __str__(self):
-        return 'IF {0!s} THEN action is {1!s}'.format(self.cond, self.action)
+        return 'IF {0!s} THEN action is {1!s}, using hedge:{2!s}'.format(self.cond,
+                self.action, self.func)
