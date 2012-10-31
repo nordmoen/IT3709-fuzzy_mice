@@ -33,3 +33,5 @@ define fuzzyset action.meh: grade = [(15, 0), (25, 1)]
 if ((health is bad) and (rate is medium)) then action is flee
 if ((health is ok) and ((distance is far) or (rate is small))) then action is meh
 if ((distance is small) and ((rate is medium) and (health is good))) then action is attack
+if (((health is ok) or (rate is small)) or (distance not small)) then action is meh
+if (health is good) then action is meh

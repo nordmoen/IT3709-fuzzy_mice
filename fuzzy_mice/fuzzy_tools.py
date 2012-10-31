@@ -58,9 +58,8 @@ def __parse_if_cond(cond, sets):
     expr = EXPR.match(cond)
     if expr:
         expr_st = expr.group()[1:-1].split(' ')
-        func = (lambda x: x) if expr_st[1] == const.IS else (lambda x: 1.0 - x)
         return FuzzyExpr(expr_st[0], sets['{0!s}.{1!s}'.format(expr_st[0],
-            expr_st[2])], func)
+            expr_st[2])], expr_st[1] == const.IS)
     else:
         a, b = __parse_if_helper(cond[1:-1])
         and1 = cond[len(a):len(a) + 1 + 4].strip() == const.AND

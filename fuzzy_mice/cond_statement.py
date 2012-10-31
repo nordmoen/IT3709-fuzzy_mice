@@ -1,23 +1,29 @@
 #!/usr/bin/python
 
+import constants as const
+
 class FuzzyExpr(object):
     '''A class representing a fuzzy expression of the form "health is good"'''
-    def __init__(self, var_name, value, func):
+    def __init__(self, var_name, value, is_val= True):
         self.var = var_name
         self.value = value
-        self.func = func
+        self.is_val = is_val
+        if self.is_val:
+            self.func = lambda x: x
+        else:
+            self.func = lambda x: 1.0 - x
 
     def eval(self, **kwargs):
         return self.func(self.value.eval(kwargs[self.var]))
 
     def __str__(self):
-        return '(Fuzzy expression: {0!s} {1!s} {2!s})'.format(self.var, self.func, self.value)
+        is_str = const.IS if self.is_val else const.NOT
+        return '(Fuzzy expression: {0!s} {1!s} {2!s})'.format(self.var, is_str, self.value)
 
 class CondStatement(object):
     '''Class representing a conditional statement of the form
     "(a and|or b)" where a and b are either a conditional statement
     or a fuzzy expression'''
-
     def __init__(self, left_cond, right_cond, func):
         self.func = func
         self.left = left_cond
