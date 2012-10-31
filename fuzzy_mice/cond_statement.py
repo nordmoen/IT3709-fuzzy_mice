@@ -1,5 +1,18 @@
 #!/usr/bin/python
 
+class FuzzyExpr(object):
+    '''A class representing a fuzzy expression of the form "health is good"'''
+    def __init__(self, var_name, value, func):
+        self.var = var_name
+        self.value = value
+        self.func = func
+
+    def eval(self, **kwargs):
+        return self.func(self.value.eval(kwargs[self.var]))
+
+    def __str__(self):
+        return '(Fuzzy expression: {0!s} {1!s} {2!s})'.format(self.var, self.func, self.value)
+
 class CondStatement(object):
     '''Class representing a conditional statement of the form
     "(a and|or b)" where a and b are either a conditional statement
@@ -15,20 +28,6 @@ class CondStatement(object):
 
     def __str__(self):
         return '(Conditional statement: {0!s} {1!s} {2!s})'.format(self.left, self.func, self.right)
-
-class FuzzyExpr(object):
-    '''A class representing a fuzzy expression of the form "health is good"'''
-    def __init__(self, var_name, value, func):
-        self.var = var_name
-        self.value = value
-        self.func = func
-
-    def eval(self, **kwargs):
-        return self.func(self.value.eval(kwargs[self.var]))
-
-    def __str__(self):
-        func_str = 'is' if not self.func else 'not'
-        return '(Fuzzy expression: {0!s} {1!s} {2!s})'.format(self.var, func_str, self.value)
 
 class IfStatement(object):
     '''A class representing a fuzzy if statement of the form "if (a and|or b)

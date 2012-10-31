@@ -16,7 +16,7 @@ if __name__ == '__main__':
     scene.setSceneRect(-300, -300, 600, 600)
     scene.setItemIndexMethod(QtGui.QGraphicsScene.NoIndex)
 
-    mouse = Mouse(0.8, 5, 5)
+    mouse = Mouse(5, 5)
     mouse.setPos(math.sin(6.28) * 200,
                  math.cos(6.28) * 200)
     scene.addItem(mouse)

@@ -12,14 +12,14 @@ class Mouse(QtGui.QGraphicsItem):
     BoundingRect = QtCore.QRectF(-20 - adjust, -22 - adjust, 40 + adjust,
             83 + adjust)
 
-    def __init__(self, size, strength, speed):
+    def __init__(self, strength, speed):
         super(Mouse, self).__init__()
 
         self.strength = strength
         self.speed = speed
         self.health = 100
         self.angle = 0.0
-        self.setScale(size)
+        self.setScale(1)
         self.mouseEyeDirection = 0.0
         self.color = QtGui.QColor(0.0,255,0.0)
 
@@ -140,6 +140,10 @@ class Mouse(QtGui.QGraphicsItem):
 
     def hurt(self, amount):
         self.health -= amount
+        scale = self.health / 100.0
+        if scale < 0.5:
+            scale = 0.5
+        self.setScale(scale)
         self.update_color()
         if self.health == 0.0:
             self.timer.stop()
