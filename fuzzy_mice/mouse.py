@@ -115,7 +115,7 @@ class Mouse(QtGui.QGraphicsItem):
                 lineToMouse = QtCore.QLineF(QtCore.QPointF(0, 0), self.mapFromItem(item, 0, 0))
                 
                 if lineToMouse.length() == 0:
-                    angleToMouse = 0
+                    angleToMouse = 0.0
                 else:
                     angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
                 
