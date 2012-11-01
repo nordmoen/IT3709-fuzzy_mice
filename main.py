@@ -20,6 +20,16 @@ if __name__ == '__main__':
     mouse.setPos(math.sin(6.28) * 200,
                  math.cos(6.28) * 200)
     scene.addItem(mouse)
+	
+    mouse2 = Mouse(3, 7)
+    mouse.setPos(math.sin(6.28) * 200,
+                 math.cos(6.28) * 200)
+    scene.addItem(mouse2)
+    
+    mouse3 = Mouse(7, 3)
+    mouse.setPos(math.sin(6.28) * 200,
+                 math.cos(6.28) * 200)
+    scene.addItem(mouse3)
 
     view = QtGui.QGraphicsView(scene)
     view.setRenderHint(QtGui.QPainter.Antialiasing)

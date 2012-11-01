@@ -80,7 +80,7 @@ class Mouse(QtGui.QGraphicsItem):
         painter.drawPath(path)
 
     def timerEvent(self):
-        self.hurt(1)
+        self.hurt(0.3)
         if self.health == 0.0:
             self.speed = 0
         else:
@@ -113,7 +113,12 @@ class Mouse(QtGui.QGraphicsItem):
                     continue
 
                 lineToMouse = QtCore.QLineF(QtCore.QPointF(0, 0), self.mapFromItem(item, 0, 0))
-                angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
+                
+                if lineToMouse.length() == 0:
+                    angleToMouse = 0
+                else:
+                    angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
+                
                 if lineToMouse.dy() < 0:
                     angleToMouse = Mouse.TwoPi - angleToMouse
                 angleToMouse = Mouse.normalizeAngle((Mouse.Pi - angleToMouse) + Mouse.Pi / 2)
@@ -145,7 +150,8 @@ class Mouse(QtGui.QGraphicsItem):
             scale = 0.5
         self.setScale(scale)
         self.update_color()
-        if self.health == 0.0:
+        if self.health <= 0.0:
+            self.health = 0.0
             self.timer.stop()
             self.scene().removeItem(self)
 
