@@ -35,7 +35,7 @@ def fight_mice():
                     fight(mouse, mouse2)
                     mouse.lastFightTime = 0
                     mouse2.lastFightTime = 0
-            
+
 
 if __name__ == '__main__':
     mice_count = 4

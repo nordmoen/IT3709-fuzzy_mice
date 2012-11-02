@@ -15,7 +15,7 @@ class Mouse(QtGui.QGraphicsItem):
             83 + adjust)
 
     lastFightTime = 0
-            
+
     def __init__(self, strength, speed, reasoner):
         '''Strength = [0, 100], speed = [1, 5]'''
         super(Mouse, self).__init__()
@@ -129,19 +129,17 @@ class Mouse(QtGui.QGraphicsItem):
                         break
 
             actionAngle = 0
+            action = '{}.{}.Fake'.format(constants.ACTION, 'meh')
             for mouse in two_worst:
                 if mouse != None:
                     dist = math.sqrt((mouse.scenePos().x() - self.scenePos().x())**2 +
                             (mouse.scenePos().y() - self.scenePos().y())**2)
                     rate1 = mouse.rate()
-                    action = self.reasoner.eval(distance=dist, rate=rate1, health=self.health)
-                    print action
-                    if action == 'action.attack':
-                        actionAngle = 0
-                        #adjust angle toward mouse
-                    elif action == 'action.flee':
-                        actionAngle = pi
-                        
+                    try:
+                        action = self.reasoner.eval(distance=dist, rate=rate1, health=self.health)
+                    except ZeroDivisionError:
+                        pass
+            print action
 
             dx = math.sin(self.angle) * 10
             self.mouseEyeDirection = [dx / 5, 0.0][QtCore.qAbs(dx / 5) < 1]
