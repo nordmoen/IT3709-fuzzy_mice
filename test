@@ -1,5 +1,6 @@
 from fuzzy_mice.fuzzy_tools import parse_file
 from fuzzy_mice.reasoner import FuzzyReasoner
-a = parse_file('test_rules.txt')
-b = FuzzyReasoner(a, range(101))
-print b.mamdani_eval(funding=35, staffing=60)
+a, c = parse_file('test_rules.txt')
+b = FuzzyReasoner(a,c)
+print b.eval(funding=35, staffing=60)
+print b.eval(funding=35, staffing=60, mamdani=False)

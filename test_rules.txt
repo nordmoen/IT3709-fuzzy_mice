@@ -4,12 +4,12 @@ define lingvar funding: inadequate, marginal, adequate
 define lingvar staffing: small, large
 define lingvar risk: low, normal, high
 
-define fuzzyset funding.inadequate: grade = [(20, 1), (39, 0)]
-define fuzzyset funding.marginal: triangle = [(20, 0), (50, 1), (80, 0)]
-define fuzzyset funding.adequate: grade = [(60, 0), (80, 1)]
+define fuzzyset funding.inadequate: grade = [(28, 1), (43, 0)]
+define fuzzyset funding.marginal: triangle = [(28, 0), (70, 1), (112, 0)]
+define fuzzyset funding.adequate: grade = [(84, 0), (112, 1)]
 
-define fuzzyset staffing.small: grade = [(30, 1), (64, 0)]
-define fuzzyset staffing.large: grade = [(40, 0), (61, 1)]
+define fuzzyset staffing.small: grade = [(33, 1), (64, 0)]
+define fuzzyset staffing.large: grade = [(44, 0), (66, 1)]
 
 define fuzzyset risk.low: grade = [(20, 1), (40, 0)]
 define fuzzyset risk.normal: triangle = [(20, 0), (50, 1), (80, 0)]

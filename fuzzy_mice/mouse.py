@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import math
+import random
 from PySide import QtGui, QtCore
 
 class Mouse(QtGui.QGraphicsItem):
@@ -8,15 +9,17 @@ class Mouse(QtGui.QGraphicsItem):
     TwoPi = 2.0 * Pi
 
     # Create the bounding rectangle once.
-    adjust = 0.5
+    adjust = 0.3
     BoundingRect = QtCore.QRectF(-20 - adjust, -22 - adjust, 40 + adjust,
             83 + adjust)
 
-    def __init__(self, strength, speed):
+    def __init__(self, strength, speed, reasoner):
+        '''Strength = [0, 100], speed = [1, 5]'''
         super(Mouse, self).__init__()
 
         self.strength = strength
         self.speed = speed
+        self.reasoner = reasoner
         self.health = 100
         self.angle = 0.0
         self.setScale(1)
@@ -54,6 +57,7 @@ class Mouse(QtGui.QGraphicsItem):
         painter.drawEllipse(-10, -17, 8, 8)
         painter.drawEllipse(2, -17, 8, 8)
 
+
         # Nose.
         painter.setBrush(QtCore.Qt.black)
         painter.drawEllipse(QtCore.QRectF(-2, -22, 4, 4))
@@ -80,8 +84,7 @@ class Mouse(QtGui.QGraphicsItem):
         painter.drawPath(path)
 
     def timerEvent(self):
-        self.hurt(1)
-        if self.health == 0.0:
+        if self.health < 0.0:
             self.speed = 0
         else:
             # Don't move too far away.
@@ -95,7 +98,8 @@ class Mouse(QtGui.QGraphicsItem):
                 if angleToCenter < Mouse.Pi and angleToCenter > Mouse.Pi / 4:
                     # Rotate left.
                     self.angle += [-0.25, 0.25][self.angle < -Mouse.Pi / 2]
-                elif angleToCenter >= Mouse.Pi and angleToCenter < (Mouse.Pi + Mouse.Pi / 2 + Mouse.Pi / 4):
+                elif angleToCenter >= Mouse.Pi and angleToCenter < (
+                        Mouse.Pi + Mouse.Pi / 2 + Mouse.Pi / 4):
                     # Rotate right.
                     self.angle += [-0.25, 0.25][self.angle < Mouse.Pi / 2]
             elif math.sin(self.angle) < 0:
@@ -103,34 +107,31 @@ class Mouse(QtGui.QGraphicsItem):
             elif math.sin(self.angle) > 0:
                 self.angle -= 0.25
 
+            height = 100*-1
+            x = (math.sqrt(3) / 2) * (2*height)
             # Try not to crash with any other mice.
             dangerMice = self.scene().items(QtGui.QPolygonF([self.mapToScene(0, 0),
-                                                             self.mapToScene(-30, -50),
-                                                             self.mapToScene(30, -50)]))
+                                                             self.mapToScene(x, height),
+                                                             self.mapToScene(-x, height)]))
 
+            two_worst = [None, None]
+            two_worst_rate = [0, 0]
             for item in dangerMice:
                 if item is self:
                     continue
+                for i in range(len(two_worst)):
+                    if item.rate() > two_worst_rate[i]:
+                        two_worst[i] = item
+                        two_worst_rate[i] = item.rate()
+                        break
 
-                lineToMouse = QtCore.QLineF(QtCore.QPointF(0, 0), self.mapFromItem(item, 0, 0))
-                angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
-                if lineToMouse.dy() < 0:
-                    angleToMouse = Mouse.TwoPi - angleToMouse
-                angleToMouse = Mouse.normalizeAngle((Mouse.Pi - angleToMouse) + Mouse.Pi / 2)
 
-                if angleToMouse >= 0 and angleToMouse < Mouse.Pi / 2:
-                    # Rotate right.
-                    self.angle += 0.5
-                elif angleToMouse <= Mouse.TwoPi and angleToMouse > (Mouse.TwoPi - Mouse.Pi / 2):
-                    # Rotate left.
-                    self.angle -= 0.5
-
-            # Add some random movement.
-            if len(dangerMice) > 1 and (QtCore.qrand() % 10) == 0:
-                if QtCore.qrand() % 1:
-                    self.angle += (QtCore.qrand() % 100) / 500.0
-                else:
-                    self.angle -= (QtCore.qrand() % 100) / 500.0
+            for mouse in two_worst:
+                if mouse != None:
+                    dist = math.sqrt((mouse.scenePos().x() - self.scenePos().x())**2 +
+                            (mouse.scenePos().y() - self.scenePos().y())**2)
+                    rate1 = mouse.rate()
+                    action = self.reasoner.eval(distance=dist, rate=rate1, health=self.health)
 
             dx = math.sin(self.angle) * 10
             self.mouseEyeDirection = [dx / 5, 0.0][QtCore.qAbs(dx / 5) < 1]
@@ -145,7 +146,7 @@ class Mouse(QtGui.QGraphicsItem):
             scale = 0.5
         self.setScale(scale)
         self.update_color()
-        if self.health == 0.0:
+        if self.health < 0.0:
             self.timer.stop()
             self.scene().removeItem(self)
 
@@ -157,3 +158,6 @@ class Mouse(QtGui.QGraphicsItem):
         if green < 0.0:
             green = 0.0
         self.color = QtGui.QColor(red*255,green*255,0.0)
+
+    def rate(self):
+        return self.health + self.strength

@@ -43,6 +43,10 @@ class FuzzyTriangle(object):
         else:
             #Value is outside of this triangle so just return 0.0
             return 0.0
+
+    def range(self):
+        return (self.right[0] - self.left[0]) / 2 + self.left[0]
+
     def __str__(self):
         return 'Triangle = left:{0!s}, top:{1!s}, right:{2!s}'.format(self.left,
                 self.top, self.right)
@@ -75,6 +79,9 @@ class FuzzyTrapeze(object):
         else:
             return 0.0
 
+    def range(self):
+        return (self.right[0] - self.left[0]) / 2 + self.left[0]
+
     def __str__(self):
         return 'Trapezoid = left:{0!s}, top_left:{1!s}, top_right:{2!s}, right:{3!s}'.format(
                 self.left, self.top_left, self.top_right, self.right)
@@ -82,7 +89,7 @@ class FuzzyTrapeze(object):
 class FuzzyGradient(object):
     '''Fuzzy set implementation representing a gradient, everything inside the
     gradient is inside the fuzzy set'''
-    def __init__(self, left, right):
+    def __init__(self, left, right, total_range = 0):
         '''If reverse is true we have a line like:
              /
             / All this is within the set
@@ -95,6 +102,7 @@ class FuzzyGradient(object):
         self.line = create_line(left, right)
         self.left = left
         self.right = right
+        self.total_range = total_range
 
     def eval(self, value):
         if not self.reverse:
@@ -111,6 +119,12 @@ class FuzzyGradient(object):
                 return self.line(value)
             else:
                 return 0.0
+
+    def range(self):
+        if self.reverse:
+            return (self.total_range - self.left[0]) / 2 + self.left[0]
+        else:
+            return self.right[0] / 2
 
     def __str__(self):
         return 'Gradient = left:{0!s}, right{1!s}'.format(self.left, self.right)

@@ -3,18 +3,22 @@
 import constants as const
 
 class FuzzyExpr(object):
-    '''A class representing a fuzzy expression of the form "health is good"'''
-    def __init__(self, var_name, value, is_val= True):
+    '''A class representing a fuzzy expression of the form "health is good",
+    is_val represents whether or not there is a NOT modifier on this expr'''
+    def __init__(self, var_name, value, is_val= True, hedge = lambda x: x):
         self.var = var_name
         self.value = value
         self.is_val = is_val
+        self.hedge = hedge
         if self.is_val:
+            #This expression does not have a NOT modifier
             self.func = lambda x: x
         else:
+            #This means the expression has a NOT modifier
             self.func = lambda x: 1.0 - x
 
     def eval(self, **kwargs):
-        return self.func(self.value.eval(kwargs[self.var]))
+        return self.func(self.hedge(self.value.eval(kwargs[self.var])))
 
     def __str__(self):
         is_str = const.IS if self.is_val else const.NOT
@@ -40,15 +44,14 @@ class IfStatement(object):
     action is act", all fuzzy if statements fire to some degree so every if statement
     will return some degree of truth for its condition. It can return a value between
     [0, 1]'''
-    def __init__(self, cond, action_name, action_set, func = lambda x: x):
+    def __init__(self, cond, action_name, action_set):
         self.cond = cond
         self.action = action_name
         self.set = action_set
-        self.func = func
 
     def eval(self, **kwargs):
         try:
-            return (self.action, self.set, self.func(self.cond.eval(**kwargs)))
+            return (self.action, self.set, self.cond.eval(**kwargs), self.set.range())
         except KeyError, e:
             raise TypeError('Not all needed arguments was supplied. The argument' +
                     ' {0!s} was needed, but not supplied'.format(e))

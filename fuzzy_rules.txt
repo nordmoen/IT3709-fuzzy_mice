@@ -7,14 +7,14 @@ define lingvar rate: small, medium, large
 define lingvar distance: close, near, far
 define lingvar action: attack, flee, meh
 
-##Fuzzyset can be triangle or trapez as variables
-define fuzzyset distance.small: trapez = [(0,0), (5,0.5), (10,1), (15, 0)]
+##Fuzzyset can be triangle or trapeze as variables
+define fuzzyset distance.small: trapeze = [(0,0), (5,0.5), (10,1), (15, 0)]
 define fuzzyset distance.far: triangle = [(0,0), (5,1), (10,0)]
-define fuzzyset health.bad: trapez = [(0,0), (5,0.5), (10,1), (15, 0)]
+define fuzzyset health.bad: trapeze = [(0,0), (5,0.5), (10,1), (15, 0)]
 define fuzzyset health.ok: triangle = [(0,0), (5,1), (10,0)]
-define fuzzyset health.good: trapez = [(0,0), (5,0.5), (10,1), (15, 0)]
+define fuzzyset health.good: trapeze = [(0,0), (5,0.5), (10,1), (15, 0)]
 define fuzzyset rate.small: triangle = [(0,0), (5,1), (10,0)]
-define fuzzyset rate.medium: trapez = [(0,0), (5,0.5), (10,1), (15, 0)]
+define fuzzyset rate.medium: trapeze = [(0,0), (5,0.5), (10,1), (15, 0)]
 
 define fuzzyset action.attack: grade = [(5,1), (10,0)]
 define fuzzyset action.flee: triangle = [(8,0), (15,1), (20, 0)]

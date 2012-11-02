@@ -15,6 +15,7 @@ def parse_file(file):
     var = {} #Variables in the rules
     sets = {} #Dict between variables in var to values
     res = []
+    action = None
     with open(file, 'r') as f:
         for i, line in enumerate(f):
             l = line.lower().strip()
@@ -24,8 +25,10 @@ def parse_file(file):
             elif l.startswith(const.DEFINE):
                 __parse_define_statement(l, var, sets, i)
             elif l.startswith(const.IF):
-                res.append(__parse_if_statement(l, var, sets, i))
-    return res
+                if_st, act = __parse_if_statement(l, var, sets, i)
+                res.append(if_st)
+                action = act
+    return res, [(action, act, sets['{}.{}'.format(action, act)]) for act in var[action]]
 
 def __parse_if_statement(line, var, sets, l_numb=None):
     '''Parse an if statement in the fuzzy rules format and convert it into
@@ -50,7 +53,7 @@ def __parse_if_statement(line, var, sets, l_numb=None):
     if set_action not in sets:
         __raise_parse_exp(NameError, 'Action({}) has not got a defined set'.format(
             set_action), line, l_numb)
-    return IfStatement(cond_st, action[-1], sets[set_action])
+    return IfStatement(cond_st, action[-1], sets[set_action]), action[0]
 
 def __parse_if_cond(cond, sets):
     #convert from "((a is A) and (b is B))" to "(a is A) and (b is B)"
@@ -58,8 +61,9 @@ def __parse_if_cond(cond, sets):
     expr = EXPR.match(cond)
     if expr:
         expr_st = expr.group()[1:-1].split(' ')
+        hedge = parse_hedge(expr_st)
         return FuzzyExpr(expr_st[0], sets['{0!s}.{1!s}'.format(expr_st[0],
-            expr_st[2])], expr_st[1] == const.IS)
+            expr_st[-1])], expr_st[1] == const.IS, hedge)
     else:
         a, b = __parse_if_helper(cond[1:-1])
         and1 = cond[len(a)+1:len(a) + 1 + 4].strip() == const.AND
@@ -69,6 +73,24 @@ def __parse_if_cond(cond, sets):
             func = max
         return CondStatement(__parse_if_cond(a.strip(), sets),
                 __parse_if_cond(b.strip(), sets), func)
+
+def parse_hedge(expr_st):
+    '''Retreive the hedge from a Fuzzy expression'''
+    if len(expr_st) > 3:
+        hedge_str = expr_st[2]
+        if hedge_str == const.LITTLE:
+            return lambda x: x**1.3
+        elif hedge_str == const.SLIGHTLY:
+            return lambda x: x**1.7
+        elif hedge_str == const.VERY:
+            return lambda x: x**2
+        elif hedge_str == const.EXTREMELY:
+            return lambda x: x**3
+        else:
+            __raise_parse_exp(SyntaxWarning, 'Hedge: "{}" is not legal'.format(
+                hedge_str), '', None)
+    else:
+        return lambda x: x
 
 def __parse_if_helper(cond):
     res = []
@@ -128,7 +150,7 @@ def __parse_define_statement(line, var, sets, l_numb = None):
         elif set_type == const.TRIANGLE:
             res = FuzzyTriangle(*set_value)
         elif set_type == const.GRADE:
-            res = FuzzyGradient(*set_value)
+            res = FuzzyGradient(*set_value, total_range=100)
         else:
             __raise_parse_exp(TypeError, 'Type for fuzzyset is wrong, was {}'.format(set_type),
                     line, l_numb)
