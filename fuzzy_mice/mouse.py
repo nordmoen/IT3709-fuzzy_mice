@@ -5,6 +5,8 @@ import random
 import constants
 from PySide import QtGui, QtCore
 
+from reasoner import NoConditionalFired
+
 class Mouse(QtGui.QGraphicsItem):
     Pi = math.pi
     TwoPi = 2.0 * Pi
@@ -137,7 +139,7 @@ class Mouse(QtGui.QGraphicsItem):
                     rate1 = mouse.rate()
                     try:
                         action = self.reasoner.eval(distance=dist, rate=rate1, health=self.health)
-                    except ZeroDivisionError:
+                    except NoConditionalFired:
                         pass
             print action
 

@@ -33,7 +33,10 @@ class FuzzyReasoner(object):
                     m_val = s_val
             above += val*m_val
             dividence[m_set] += 1
-        return above / sum([dividence[s]*s_val for (_, s, s_val, _) in res])
+        below = sum([dividence[s]*s_val for (_, s, s_val, _) in res])
+        if below == 0:
+            raise NoConditionalFired(self.if_sts)
+        return above / below
 
     def __sugeno_eval(self, **kwargs):
         res = map(lambda x: x.eval(**kwargs), self.if_sts)
@@ -54,3 +57,14 @@ class FuzzyReasoner(object):
                 best = r
                 best_str = '{}.{}'.format(action, action_class)
         return best_str
+
+class FuzzyRuntimeError(RuntimeError):
+    '''An umbrella error for runtime errors in the fuzzy rezoning'''
+    def __init__(self, msg):
+        super(RuntimeError, self).__init__(msg)
+
+class NoConditionalFired(FuzzyRuntimeError):
+    '''An error thrown when a none of the conditionals in the reasoner fires'''
+    def __inti__(self, if_conds):
+        super(FuzzyRuntimeError, self).__init__('None of the conditionals fired:\n{0!s}'.format(
+            map(str, if_conds)))
