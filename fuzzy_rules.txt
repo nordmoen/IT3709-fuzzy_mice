@@ -4,21 +4,25 @@
 ##define can either define a lingvar or a fuzzyset
 define lingvar health: bad, ok, good
 define lingvar rate: small, medium, large
-define lingvar distance: close, near, far
+define lingvar distance: close, medium, far
 define lingvar action: attack, flee, meh
 
 ##Fuzzyset can be triangle or trapeze as variables
-define fuzzyset distance.small: trapeze = [(0,0), (5,0.5), (10,1), (15, 0)]
-define fuzzyset distance.far: triangle = [(0,0), (5,1), (10,0)]
-define fuzzyset health.bad: trapeze = [(0,0), (5,0.5), (10,1), (15, 0)]
-define fuzzyset health.ok: triangle = [(0,0), (5,1), (10,0)]
-define fuzzyset health.good: trapeze = [(0,0), (5,0.5), (10,1), (15, 0)]
-define fuzzyset rate.small: triangle = [(0,0), (5,1), (10,0)]
-define fuzzyset rate.medium: trapeze = [(0,0), (5,0.5), (10,1), (15, 0)]
+define fuzzyset distance.close: grade = [(15,1), (30,0)]
+define fuzzyset distance.medium: triangle = [(25,0), (50,1), (75,0)]
+define fuzzyset distance.far: grade = [(70,0), (85,1)]
 
-define fuzzyset action.attack: grade = [(5,1), (10,0)]
-define fuzzyset action.flee: triangle = [(8,0), (15,1), (20, 0)]
-define fuzzyset action.meh: grade = [(15, 0), (25, 1)]
+define fuzzyset health.bad: grade = [(15,1), (30, 0)]
+define fuzzyset health.ok: triangle = [(25,0), (50,1), (75,0)]
+define fuzzyset health.good: grade = [(60,0), (80, 1)]
+
+define fuzzyset rate.small: grade = [(15,1), (25,0)]
+define fuzzyset rate.medium: trapeze = [(20,0), (30,1), (60,1), (70, 0)]
+define fuzzyset rate.large: grade = [(65, 0), (80,1)]
+
+define fuzzyset action.attack: grade = [(70,0), (80,1)]
+define fuzzyset action.meh: trapeze = [(25, 0), (35, 1), (65, 1), (75, 0)]
+define fuzzyset action.flee: grade = [(15,1), (30, 0)]
 
 ##IF rules are of the following form, each fuzzy statement in the if
 ##can be seperated with each of the following: ["and", "or"]
@@ -30,9 +34,7 @@ define fuzzyset action.meh: grade = [(15, 0), (25, 1)]
 ##ACTION 	= VAR_NAME 
 ##LINGVAR 	= [a-z]+
 ##VAR_NAME 	= [a-z]+
-if ((health is bad) and (rate is medium)) then action is flee
+if ((health is bad) and ((rate is medium) or (rate is large))) then action is flee
 if ((health is ok) and ((distance is far) or (rate is small))) then action is meh
-if ((distance is small) and ((rate is medium) and (health is good))) then action is attack
-if (((health is ok) or (rate is small)) or (distance not small)) then action is meh
-if (health is good) then action is meh
-
+if ((health is good) and (rate is small)) then action is attack
+if (((health is ok) and (rate is small)) or ((distance not close) and (distance not medium))) then action is meh

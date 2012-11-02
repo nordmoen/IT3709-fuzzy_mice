@@ -16,9 +16,9 @@ def fight(mouse1, mouse2):
     s1 = mouse1.rate()*random.random()
     s2 = mouse2.rate()*random.random()
     if s1 > s2:
-        mouse2.hurt(mouse1.strength*random.random())
+        mouse2.hurt(mouse1.strength*random.random()*100)
     else:
-        mouse1.hurt(mouse2.strength*random.random())
+        mouse1.hurt(mouse2.strength*random.random()*100)
 
 def fight_mice():
     mice = scene.items()[:]
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     scene.changed.connect(fight_mice)
 
     for i in range(mice_count):
-        mouse = Mouse(random.randint(0, 100), random.randint(4, 10), reason)
+        mouse = Mouse(random.random(), random.randint(4, 10), reason)
         mouse.setPos(math.sin(6.28*random.random()) * 200,
                      math.cos(6.28*random.random()) * 200)
         scene.addItem(mouse)

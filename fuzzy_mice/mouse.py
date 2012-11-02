@@ -2,6 +2,7 @@
 
 import math
 import random
+import constants
 from PySide import QtGui, QtCore
 
 class Mouse(QtGui.QGraphicsItem):
@@ -127,12 +128,20 @@ class Mouse(QtGui.QGraphicsItem):
                         two_worst_rate[i] = item.rate()
                         break
 
+            actionAngle = 0
             for mouse in two_worst:
                 if mouse != None:
                     dist = math.sqrt((mouse.scenePos().x() - self.scenePos().x())**2 +
                             (mouse.scenePos().y() - self.scenePos().y())**2)
                     rate1 = mouse.rate()
                     action = self.reasoner.eval(distance=dist, rate=rate1, health=self.health)
+                    print action
+                    if action == 'action.attack':
+                        actionAngle = 0
+                        #adjust angle toward mouse
+                    elif action == 'action.flee':
+                        actionAngle = pi
+                        
 
             dx = math.sin(self.angle) * 10
             self.mouseEyeDirection = [dx / 5, 0.0][QtCore.qAbs(dx / 5) < 1]
@@ -161,4 +170,4 @@ class Mouse(QtGui.QGraphicsItem):
         self.color = QtGui.QColor(red*255,green*255,0.0)
 
     def rate(self):
-        return self.health + self.strength
+        return self.health * self.strength
