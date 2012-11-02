@@ -23,13 +23,22 @@ def fight(mouse1, mouse2):
 def fight_mice():
     mice = scene.items()[:]
     for mouse in mice:
-        for mouse2 in scene.collidingItems(mouse):
-            if mouse2 in mice:
-                mice.remove(mouse2)
-            fight(mouse, mouse2)
+        if mouse.lastFightTime < 5:
+            mouse.lastFightTime += 1
+        else:
+            for mouse2 in scene.collidingItems(mouse):
+                if mouse2.lastFightTime < 5:
+                    mouse2.lastFightTime += 1
+                else:
+                    if mouse2 in mice:
+                        mice.remove(mouse2)
+                    fight(mouse, mouse2)
+                    mouse.lastFightTime = 0
+                    mouse2.lastFightTime = 0
+            
 
 if __name__ == '__main__':
-    mice_count = 3
+    mice_count = 4
     if_cond, action_sets = parse_file('fuzzy_rules.txt')
     reason = FuzzyReasoner(if_cond, action_sets, range(201))
     app = QtGui.QApplication(sys.argv)

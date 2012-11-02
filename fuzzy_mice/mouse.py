@@ -13,6 +13,8 @@ class Mouse(QtGui.QGraphicsItem):
     BoundingRect = QtCore.QRectF(-20 - adjust, -22 - adjust, 40 + adjust,
             83 + adjust)
 
+    lastFightTime = 0
+            
     def __init__(self, strength, speed, reasoner):
         '''Strength = [0, 100], speed = [1, 5]'''
         super(Mouse, self).__init__()
