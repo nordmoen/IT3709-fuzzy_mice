@@ -125,7 +125,6 @@ class Mouse(QtGui.QGraphicsItem):
                         two_worst_rate[i] = item.rate()
                         break
 
-
             for mouse in two_worst:
                 if mouse != None:
                     dist = math.sqrt((mouse.scenePos().x() - self.scenePos().x())**2 +
