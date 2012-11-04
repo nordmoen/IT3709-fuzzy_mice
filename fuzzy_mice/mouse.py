@@ -94,7 +94,7 @@ class Mouse(QtGui.QGraphicsItem):
         else:
             # Don't move too far away.
             lineToCenter = QtCore.QLineF(QtCore.QPointF(0, 0), self.mapFromScene(0, 0))
-            if lineToCenter.length() > 150:
+            if lineToCenter.length() > 200:
                 angleToCenter = math.acos(lineToCenter.dx() / lineToCenter.length())
                 if lineToCenter.dy() < 0:
                     angleToCenter = Mouse.TwoPi - angleToCenter;
@@ -142,8 +142,13 @@ class Mouse(QtGui.QGraphicsItem):
                     except NoConditionalFired:
                         pass
             print action
+            
+            #act on the action
+            if action == 'action.flee':
+                actionAngle = self.Pi   
+            
 
-            dx = math.sin(self.angle) * 10
+            dx = math.sin(self.angle + actionAngle) * 10
             self.mouseEyeDirection = [dx / 5, 0.0][QtCore.qAbs(dx / 5) < 1]
 
             self.rotate(dx)
