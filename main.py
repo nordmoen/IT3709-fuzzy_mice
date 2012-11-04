@@ -62,7 +62,7 @@ if __name__ == '__main__':
     view.setViewportUpdateMode(QtGui.QGraphicsView.BoundingRectViewportUpdate)
     view.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
     view.setWindowTitle("Colliding Mice")
-    view.resize(400, 300)
+    view.resize(650, 650)
     view.show()
 
     sys.exit(app.exec_())
