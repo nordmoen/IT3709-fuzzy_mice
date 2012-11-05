@@ -20,3 +20,8 @@ LITTLE = 'little'
 SLIGHTLY = 'slightly'
 VERY = 'very'
 EXTREMELY = 'extremely'
+
+#Actions:
+NO_ACTION = 'meh'
+ATTACK = 'attack'
+FLEE = 'flee'

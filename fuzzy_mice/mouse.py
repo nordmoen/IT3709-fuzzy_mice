@@ -94,7 +94,7 @@ class Mouse(QtGui.QGraphicsItem):
         else:
             # Don't move too far away.
             lineToCenter = QtCore.QLineF(QtCore.QPointF(0, 0), self.mapFromScene(0, 0))
-            if lineToCenter.length() > 200:
+            if lineToCenter.length() > 300:
                 angleToCenter = math.acos(lineToCenter.dx() / lineToCenter.length())
                 if lineToCenter.dy() < 0:
                     angleToCenter = Mouse.TwoPi - angleToCenter;
@@ -112,7 +112,7 @@ class Mouse(QtGui.QGraphicsItem):
             elif math.sin(self.angle) > 0:
                 self.angle -= 0.25
 
-            height = 100*-1
+            height = 300*-1
             x = (math.sqrt(3) / 2) * (2*height)
             # Try not to crash with any other mice.
             dangerMice = self.scene().items(QtGui.QPolygonF([self.mapToScene(0, 0),
@@ -131,7 +131,7 @@ class Mouse(QtGui.QGraphicsItem):
                         break
 
             actionAngle = 0
-            action = '{}.{}.Fake'.format(constants.ACTION, 'meh')
+            action = '{}.{}.Fake'.format(constants.ACTION, constants.NO_ACTION)
             for mouse in two_worst:
                 if mouse != None:
                     dist = math.sqrt((mouse.scenePos().x() - self.scenePos().x())**2 +
@@ -141,14 +141,28 @@ class Mouse(QtGui.QGraphicsItem):
                         action = self.reasoner.eval(distance=dist, rate=rate1, health=self.health)
                     except NoConditionalFired:
                         pass
-            print action
-            
-            #act on the action
-            if action == 'action.flee':
-                actionAngle = self.Pi   
-            
 
-            dx = math.sin(self.angle + actionAngle) * 10
+            #act on the action
+            act = action.split('.')
+            dx = math.sin(self.angle) * 10
+            if act[0] == constants.ACTION:
+                if act[1] == constants.NO_ACTION:
+                    pass
+                elif act[1] == constants.ATTACK:
+                    mouse = self.worst_enemy(two_worst, lambda x, y: x.health < y.health)
+                    lineToMouse = QtCore.QLineF(mouse.scenePos(), self.mapFromScene(0, 0))
+                    angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
+                    dx = angleToMouse
+                elif act[1] == constants.FLEE:
+                    mouse = self.worst_enemy(two_worst, lambda x, y: x.health > y.health)
+                    lineToMouse = QtCore.QLineF(two_worst[0].scenePos(), self.mapFromScene(0, 0))
+                    angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
+                    dx = 180-angleToMouse
+            else:
+                raise RuntimeError('The action was not a proper formated action' +
+                        ' was {}'.format(act))
+
+
             self.mouseEyeDirection = [dx / 5, 0.0][QtCore.qAbs(dx / 5) < 1]
 
             self.rotate(dx)
@@ -176,3 +190,14 @@ class Mouse(QtGui.QGraphicsItem):
 
     def rate(self):
         return self.health * self.strength
+
+    def worst_enemy(self, two_worst, cmp_func):
+        if two_worst[0]:
+            if two_worst[1]:
+                mouse = two_worst[0] if cmp_func(two_worst[0],
+                        two_worst[1]) else two_worst[1]
+            else:
+                mouse = two_worst[0]
+        else:
+            mouse = two_worst[1]
+        return mouse

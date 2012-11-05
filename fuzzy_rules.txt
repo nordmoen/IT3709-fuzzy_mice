@@ -38,3 +38,4 @@ if ((health is bad) and ((rate is medium) or (rate is large))) then action is fl
 if ((health is ok) and ((distance is far) or (rate is small))) then action is meh
 if ((health is good) and (rate is small)) then action is attack
 if (((health is ok) and (rate is small)) or ((distance not close) and (distance not medium))) then action is meh
+if ((health is ok) and (rate is large)) then action is flee
