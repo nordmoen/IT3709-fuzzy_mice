@@ -94,7 +94,7 @@ class Mouse(QtGui.QGraphicsItem):
         else:
             # Don't move too far away.
             lineToCenter = QtCore.QLineF(QtCore.QPointF(0, 0), self.mapFromScene(0, 0))
-            if lineToCenter.length() > 300:
+            if lineToCenter.length() > 250:
                 angleToCenter = math.acos(lineToCenter.dx() / lineToCenter.length())
                 if lineToCenter.dy() < 0:
                     angleToCenter = Mouse.TwoPi - angleToCenter;
@@ -130,7 +130,7 @@ class Mouse(QtGui.QGraphicsItem):
                         two_worst_rate[i] = item.rate()
                         break
 
-            actionAngle = 0
+            
             action = '{}.{}.Fake'.format(constants.ACTION, constants.NO_ACTION)
             for mouse in two_worst:
                 if mouse != None:
@@ -144,7 +144,7 @@ class Mouse(QtGui.QGraphicsItem):
 
             #act on the action
             act = action.split('.')
-            dx = math.sin(self.angle) * 10
+            dx = self.angle
             if act[0] == constants.ACTION:
                 if act[1] == constants.NO_ACTION:
                     pass
@@ -157,7 +157,7 @@ class Mouse(QtGui.QGraphicsItem):
                     mouse = self.worst_enemy(two_worst, lambda x, y: x.health > y.health)
                     lineToMouse = QtCore.QLineF(two_worst[0].scenePos(), self.mapFromScene(0, 0))
                     angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
-                    dx = 180-angleToMouse
+                    dx = self.Pi-angleToMouse
             else:
                 raise RuntimeError('The action was not a proper formated action' +
                         ' was {}'.format(act))
@@ -165,7 +165,7 @@ class Mouse(QtGui.QGraphicsItem):
 
             self.mouseEyeDirection = [dx / 5, 0.0][QtCore.qAbs(dx / 5) < 1]
 
-            self.rotate(dx)
+            self.rotate(math.degrees(dx)/10) #reduce the rotation a bit
             self.setPos(self.mapToParent(0, -(self.speed)))
 
     def hurt(self, amount):
