@@ -152,12 +152,12 @@ class Mouse(QtGui.QGraphicsItem):
                     mouse = self.worst_enemy(two_worst, lambda x, y: x.health < y.health)
                     lineToMouse = QtCore.QLineF(mouse.scenePos(), self.mapFromScene(0, 0))
                     angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
-                    dx = angleToMouse
+                    dx -= angleToMouse
                 elif act[1] == constants.FLEE:
                     mouse = self.worst_enemy(two_worst, lambda x, y: x.health > y.health)
                     lineToMouse = QtCore.QLineF(two_worst[0].scenePos(), self.mapFromScene(0, 0))
                     angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
-                    dx = self.Pi-angleToMouse
+                    dx -= (self.Pi/2) - angleToMouse
             else:
                 raise RuntimeError('The action was not a proper formated action' +
                         ' was {}'.format(act))

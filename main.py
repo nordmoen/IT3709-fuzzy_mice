@@ -38,7 +38,7 @@ def fight_mice():
 
 
 if __name__ == '__main__':
-    mice_count = 4
+    mice_count = 6
     if_cond, action_sets = parse_file('fuzzy_rules.txt')
     reason = FuzzyReasoner(if_cond, action_sets, range(201))
     app = QtGui.QApplication(sys.argv)
