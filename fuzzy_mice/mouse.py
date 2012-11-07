@@ -131,36 +131,51 @@ class Mouse(QtGui.QGraphicsItem):
                         break
 
             
-            action = '{}.{}.Fake'.format(constants.ACTION, constants.NO_ACTION)
-            for mouse in two_worst:
-                if mouse != None:
-                    dist = math.sqrt((mouse.scenePos().x() - self.scenePos().x())**2 +
-                            (mouse.scenePos().y() - self.scenePos().y())**2)
-                    rate1 = mouse.rate()
+            action = ['{}.{}.Fake'.format(constants.ACTION, constants.NO_ACTION),
+                        '{}.{}.Fake'.format(constants.ACTION, constants.NO_ACTION)]
+            for i in range(len(two_worst)):
+                if two_worst[i] != None:
+                    dist = math.sqrt((two_worst[i].scenePos().x() - self.scenePos().x())**2 +
+                            (two_worst[i].scenePos().y() - self.scenePos().y())**2)
+                    rate1 = two_worst[i].rate()
                     try:
-                        action = self.reasoner.eval(distance=dist, rate=rate1, health=self.health)
+                        action[i] = self.reasoner.eval(distance=dist, rate=rate1, health=self.health)
                     except NoConditionalFired:
                         pass
 
+            action[0] = action[0].split('.')
+            action[1] = action[1].split('.')
+            
+            imp = 0 #decide which is most important
+            if action[0][0] == constants.ACTION:
+                if action[0][1] == constants.ATTACK:
+                    if action[1][0] == constants.ACTION:
+                        if action[1][1] == constants.FLEE:
+                            imp = 1
+                if action[0][1] == constants.NO_ACTION:
+                    if action[1][0] == constants.ACTION:
+                        if action[1][1] != constants.NO_ACTION:
+                            imp = 1
+                    
+            
             #act on the action
-            act = action.split('.')
             dx = self.angle
-            if act[0] == constants.ACTION:
-                if act[1] == constants.NO_ACTION:
+            if action[imp][0] == constants.ACTION:
+                if action[imp][1] == constants.NO_ACTION:
                     pass
-                elif act[1] == constants.ATTACK:
-                    mouse = self.worst_enemy(two_worst, lambda x, y: x.health < y.health)
-                    lineToMouse = QtCore.QLineF(mouse.scenePos(), self.mapFromScene(0, 0))
+                elif action[imp][1] == constants.ATTACK:
+                    #mouse = self.worst_enemy(two_worst, lambda x, y: x.health < y.health)
+                    lineToMouse = QtCore.QLineF(two_worst[imp].scenePos(), self.mapFromScene(0, 0))
                     angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
                     dx -= angleToMouse
-                elif act[1] == constants.FLEE:
-                    mouse = self.worst_enemy(two_worst, lambda x, y: x.health > y.health)
-                    lineToMouse = QtCore.QLineF(two_worst[0].scenePos(), self.mapFromScene(0, 0))
+                elif action[imp][1] == constants.FLEE:
+                    #mouse = self.worst_enemy(two_worst, lambda x, y: x.health > y.health)
+                    lineToMouse = QtCore.QLineF(two_worst[imp].scenePos(), self.mapFromScene(0, 0))
                     angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
-                    dx -= (self.Pi/2) - angleToMouse
+                    dx += (self.Pi/2) - angleToMouse
             else:
                 raise RuntimeError('The action was not a proper formated action' +
-                        ' was {}'.format(act))
+                        ' was {}'.format(action[imp]))
 
 
             self.mouseEyeDirection = [dx / 5, 0.0][QtCore.qAbs(dx / 5) < 1]
