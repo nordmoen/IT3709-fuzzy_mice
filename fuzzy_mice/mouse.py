@@ -30,6 +30,7 @@ class Mouse(QtGui.QGraphicsItem):
         self.setScale(1)
         self.mouseEyeDirection = 0.0
         self.color = QtGui.QColor(0.0,255,0.0)
+        self.earColor = QtCore.Qt.darkYellow
 
         self.rotate(QtCore.qrand() % (360 * 16))
 
@@ -75,7 +76,7 @@ class Mouse(QtGui.QGraphicsItem):
         if self.scene().collidingItems(self):
             painter.setBrush(QtCore.Qt.red)
         else:
-            painter.setBrush(QtCore.Qt.darkYellow)
+            painter.setBrush(self.earColor)
 
         painter.drawEllipse(-17, -12, 16, 16)
         painter.drawEllipse(1, -12, 16, 16)
@@ -163,16 +164,19 @@ class Mouse(QtGui.QGraphicsItem):
             if action[imp][0] == constants.ACTION:
                 if action[imp][1] == constants.NO_ACTION:
                     pass
+                    self.earColor = QtCore.Qt.darkYellow
                 elif action[imp][1] == constants.ATTACK:
                     #mouse = self.worst_enemy(two_worst, lambda x, y: x.health < y.health)
                     lineToMouse = QtCore.QLineF(two_worst[imp].scenePos(), self.mapFromScene(0, 0))
                     angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
                     dx -= angleToMouse
+                    self.earColor = QtCore.Qt.darkRed
                 elif action[imp][1] == constants.FLEE:
                     #mouse = self.worst_enemy(two_worst, lambda x, y: x.health > y.health)
                     lineToMouse = QtCore.QLineF(two_worst[imp].scenePos(), self.mapFromScene(0, 0))
                     angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
                     dx += (self.Pi/2) - angleToMouse
+                    self.earColor = QtCore.Qt.lightGray
             else:
                 raise RuntimeError('The action was not a proper formated action' +
                         ' was {}'.format(action[imp]))
