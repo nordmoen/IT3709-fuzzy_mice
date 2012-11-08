@@ -50,7 +50,7 @@ if __name__ == '__main__':
     scene.changed.connect(fight_mice)
 
     for i in range(mice_count):
-        mouse = Mouse(random.random(), random.randint(4, 6), reason)
+        mouse = Mouse(random.random(), random.randint(2, 4), reason)
         mouse.setPos(math.sin(6.28*random.random()) * 200,
                      math.cos(6.28*random.random()) * 200)
         scene.addItem(mouse)

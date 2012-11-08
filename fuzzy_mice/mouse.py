@@ -163,19 +163,50 @@ class Mouse(QtGui.QGraphicsItem):
             dx = self.angle
             if action[imp][0] == constants.ACTION:
                 if action[imp][1] == constants.NO_ACTION:
-                    pass
                     self.earColor = QtCore.Qt.darkYellow
                 elif action[imp][1] == constants.ATTACK:
-                    #mouse = self.worst_enemy(two_worst, lambda x, y: x.health < y.health)
-                    lineToMouse = QtCore.QLineF(two_worst[imp].scenePos(), self.mapFromScene(0, 0))
-                    angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
-                    dx -= angleToMouse
+                    lineToMouse = QtCore.QLineF(two_worst[imp].scenePos(), self.scenePos())
+                    
+                    myDirection = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), self.scenePos())
+                    halfDiff = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), two_worst[imp].scenePos()).length()/2
+                    
+                    enemyAngle = math.acos(halfDiff / lineToMouse.length())
+                    
+                    angleToMouse = Mouse.Pi - (2 * enemyAngle)
+                    
+                    leftPoly = QtGui.QPolygonF([self.mapToParent(0,0),
+                                                self.mapToParent(0, -(lineToMouse.length() + 2)), 
+                                                self.mapToParent(-(lineToMouse.length() + 2), 0),
+                                                self.mapToParent(-(lineToMouse.length() + 2), -(lineToMouse.length() + 2))])
+                    
+                    if angleToMouse > Mouse.Pi/50:
+                        if leftPoly.containsPoint(two_worst[imp].scenePos(), QtCore.Qt.FillRule.OddEvenFill):
+                            dx -= angleToMouse/2
+                        else:
+                            dx += angleToMouse/2
+                        
                     self.earColor = QtCore.Qt.darkRed
+                    
                 elif action[imp][1] == constants.FLEE:
-                    #mouse = self.worst_enemy(two_worst, lambda x, y: x.health > y.health)
-                    lineToMouse = QtCore.QLineF(two_worst[imp].scenePos(), self.mapFromScene(0, 0))
-                    angleToMouse = math.acos(lineToMouse.dx() / lineToMouse.length())
-                    dx += (self.Pi/2) - angleToMouse
+                    lineToMouse = QtCore.QLineF(two_worst[imp].scenePos(), self.scenePos())
+                    
+                    myDirection = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), self.scenePos())
+                    halfDiff = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), two_worst[imp].scenePos()).length()/2
+                    
+                    enemyAngle = math.acos(halfDiff / lineToMouse.length())
+                    
+                    angleToMouse = Mouse.Pi - (2 * enemyAngle)
+                    
+                    leftPoly = QtGui.QPolygonF([self.mapToParent(0,0),
+                                                self.mapToParent(0, -(lineToMouse.length() + 2)), 
+                                                self.mapToParent(-(lineToMouse.length() + 2), 0),
+                                                self.mapToParent(-(lineToMouse.length() + 2), -(lineToMouse.length() + 2))])
+                    
+                    if leftPoly.containsPoint(two_worst[imp].scenePos(), QtCore.Qt.FillRule.OddEvenFill):
+                        dx += angleToMouse
+                    else:
+                        dx -= angleToMouse
+                    
                     self.earColor = QtCore.Qt.lightGray
             else:
                 raise RuntimeError('The action was not a proper formated action' +
@@ -184,7 +215,7 @@ class Mouse(QtGui.QGraphicsItem):
 
             self.mouseEyeDirection = [dx / 5, 0.0][QtCore.qAbs(dx / 5) < 1]
 
-            self.rotate(math.degrees(dx)/10) #reduce the rotation a bit
+            self.setRotation(self.rotation() + (math.degrees(dx)/10)) #reduce the rotation a bit
             self.setPos(self.mapToParent(0, -(self.speed)))
 
     def hurt(self, amount):
