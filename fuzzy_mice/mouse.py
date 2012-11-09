@@ -165,44 +165,45 @@ class Mouse(QtGui.QGraphicsItem):
                 if action[imp][1] == constants.NO_ACTION:
                     self.earColor = QtCore.Qt.darkYellow
                 elif action[imp][1] == constants.ATTACK:
-                    lineToMouse = QtCore.QLineF(two_worst[imp].scenePos(), self.scenePos())
+                    #create an isosceles triangle to find the angle toward the mouse
+                    lineToMouse = QtCore.QLineF(two_worst[imp].mapToParent(0,0), self.mapToParent(0,0))
                     
-                    myDirection = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), self.scenePos())
-                    halfDiff = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), two_worst[imp].scenePos()).length()/2
+                    myDirection = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), self.mapToParent(0,0))
+                    halfDiff = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), two_worst[imp].mapToParent(0,0)).length()/2
                     
                     enemyAngle = math.acos(halfDiff / lineToMouse.length())
                     
                     angleToMouse = Mouse.Pi - (2 * enemyAngle)
                     
-                    leftPoly = QtGui.QPolygonF([self.mapToParent(0,0),
-                                                self.mapToParent(0, -(lineToMouse.length() + 2)), 
-                                                self.mapToParent(-(lineToMouse.length() + 2), 0),
-                                                self.mapToParent(-(lineToMouse.length() + 2), -(lineToMouse.length() + 2))])
+                    #use a polygon to determine if mouse is to the left or right
+                    leftPoly = QtGui.QPolygonF([self.mapToParent(0,50),
+                                                self.mapToParent(0, -(lineToMouse.length() + 50)), 
+                                                self.mapToParent(-(lineToMouse.length() + 50), -(lineToMouse.length() + 50)),
+                                                self.mapToParent(-(lineToMouse.length() + 50), 50)])
                     
-                    if angleToMouse > Mouse.Pi/50:
-                        if leftPoly.containsPoint(two_worst[imp].scenePos(), QtCore.Qt.FillRule.OddEvenFill):
-                            dx -= angleToMouse/2
-                        else:
-                            dx += angleToMouse/2
-                        
+                    if leftPoly.containsPoint(two_worst[imp].mapToParent(0,0), QtCore.Qt.FillRule.OddEvenFill):
+                        dx -= angleToMouse
+                    else:
+                        dx += angleToMouse
+                    
                     self.earColor = QtCore.Qt.darkRed
                     
                 elif action[imp][1] == constants.FLEE:
-                    lineToMouse = QtCore.QLineF(two_worst[imp].scenePos(), self.scenePos())
+                    lineToMouse = QtCore.QLineF(two_worst[imp].mapToParent(0,0), self.mapToParent(0,0))
                     
-                    myDirection = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), self.scenePos())
-                    halfDiff = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), two_worst[imp].scenePos()).length()/2
+                    myDirection = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), self.mapToParent(0,0))
+                    halfDiff = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), two_worst[imp].mapToParent(0,0)).length()/2
                     
                     enemyAngle = math.acos(halfDiff / lineToMouse.length())
                     
                     angleToMouse = Mouse.Pi - (2 * enemyAngle)
                     
-                    leftPoly = QtGui.QPolygonF([self.mapToParent(0,0),
-                                                self.mapToParent(0, -(lineToMouse.length() + 2)), 
-                                                self.mapToParent(-(lineToMouse.length() + 2), 0),
-                                                self.mapToParent(-(lineToMouse.length() + 2), -(lineToMouse.length() + 2))])
+                    leftPoly = QtGui.QPolygonF([self.mapToParent(0,50),
+                                                self.mapToParent(0, -(lineToMouse.length() + 50)), 
+                                                self.mapToParent(-(lineToMouse.length() + 50), -(lineToMouse.length() + 50)),
+                                                self.mapToParent(-(lineToMouse.length() + 50), 50)])
                     
-                    if leftPoly.containsPoint(two_worst[imp].scenePos(), QtCore.Qt.FillRule.OddEvenFill):
+                    if leftPoly.containsPoint(two_worst[imp].mapToParent(0,0), QtCore.Qt.FillRule.OddEvenFill):
                         dx += angleToMouse
                     else:
                         dx -= angleToMouse
