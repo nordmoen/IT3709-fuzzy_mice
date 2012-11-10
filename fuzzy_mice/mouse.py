@@ -131,7 +131,7 @@ class Mouse(QtGui.QGraphicsItem):
                         two_worst_rate[i] = item.rate()
                         break
 
-            
+
             action = ['{}.{}.Fake'.format(constants.ACTION, constants.NO_ACTION),
                         '{}.{}.Fake'.format(constants.ACTION, constants.NO_ACTION)]
             for i in range(len(two_worst)):
@@ -146,7 +146,7 @@ class Mouse(QtGui.QGraphicsItem):
 
             action[0] = action[0].split('.')
             action[1] = action[1].split('.')
-            
+
             imp = 0 #decide which is most important
             if action[0][0] == constants.ACTION:
                 if action[0][1] == constants.ATTACK:
@@ -157,8 +157,8 @@ class Mouse(QtGui.QGraphicsItem):
                     if action[1][0] == constants.ACTION:
                         if action[1][1] != constants.NO_ACTION:
                             imp = 1
-                    
-            
+
+
             #act on the action
             dx = self.angle
             if action[imp][0] == constants.ACTION:
@@ -167,47 +167,47 @@ class Mouse(QtGui.QGraphicsItem):
                 elif action[imp][1] == constants.ATTACK:
                     #create an isosceles triangle to find the angle toward the mouse
                     lineToMouse = QtCore.QLineF(two_worst[imp].mapToParent(0,0), self.mapToParent(0,0))
-                    
+
                     myDirection = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), self.mapToParent(0,0))
                     halfDiff = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), two_worst[imp].mapToParent(0,0)).length()/2
-                    
+
                     enemyAngle = math.acos(halfDiff / lineToMouse.length())
-                    
+
                     angleToMouse = Mouse.Pi - (2 * enemyAngle)
-                    
+
                     #use a polygon to determine if mouse is to the left or right
                     leftPoly = QtGui.QPolygonF([self.mapToParent(0,50),
                                                 self.mapToParent(0, -(lineToMouse.length() + 50)), 
                                                 self.mapToParent(-(lineToMouse.length() + 50), -(lineToMouse.length() + 50)),
                                                 self.mapToParent(-(lineToMouse.length() + 50), 50)])
-                    
+
                     if leftPoly.containsPoint(two_worst[imp].mapToParent(0,0), QtCore.Qt.FillRule.OddEvenFill):
                         dx -= angleToMouse
                     else:
                         dx += angleToMouse
-                    
+
                     self.earColor = QtCore.Qt.darkRed
-                    
+
                 elif action[imp][1] == constants.FLEE:
                     lineToMouse = QtCore.QLineF(two_worst[imp].mapToParent(0,0), self.mapToParent(0,0))
-                    
+
                     myDirection = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), self.mapToParent(0,0))
                     halfDiff = QtCore.QLineF(self.mapToParent(0, -lineToMouse.length()), two_worst[imp].mapToParent(0,0)).length()/2
-                    
+
                     enemyAngle = math.acos(halfDiff / lineToMouse.length())
-                    
+
                     angleToMouse = Mouse.Pi - (2 * enemyAngle)
-                    
+
                     leftPoly = QtGui.QPolygonF([self.mapToParent(0,50),
                                                 self.mapToParent(0, -(lineToMouse.length() + 50)), 
                                                 self.mapToParent(-(lineToMouse.length() + 50), -(lineToMouse.length() + 50)),
                                                 self.mapToParent(-(lineToMouse.length() + 50), 50)])
-                    
+
                     if leftPoly.containsPoint(two_worst[imp].mapToParent(0,0), QtCore.Qt.FillRule.OddEvenFill):
                         dx += angleToMouse
                     else:
                         dx -= angleToMouse
-                    
+
                     self.earColor = QtCore.Qt.lightGray
             else:
                 raise RuntimeError('The action was not a proper formated action' +

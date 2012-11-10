@@ -22,7 +22,8 @@ class FuzzyExpr(object):
 
     def __str__(self):
         is_str = const.IS if self.is_val else const.NOT
-        return '(Fuzzy expression: {0!s} {1!s} {2!s})'.format(self.var, is_str, self.value)
+        return '(Fuzzy expression: {0!s} {1!s} {2!s}, using hedge:{3!s})'.format(
+                self.var, is_str, self.value, self.hedge)
 
 class CondStatement(object):
     '''Class representing a conditional statement of the form
@@ -57,5 +58,5 @@ class IfStatement(object):
                     ' {0!s} was needed, but not supplied'.format(e))
 
     def __str__(self):
-        return 'IF {0!s} THEN action is {1!s}, using hedge:{2!s}'.format(self.cond,
-                self.action, self.func)
+        return 'IF {0!s} THEN action is {1!s}'.format(self.cond,
+                self.action)
