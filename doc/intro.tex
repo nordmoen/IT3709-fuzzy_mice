@@ -1,0 +1,20 @@
+\section{Introduction}\label{intro}
+Fuzzy logic is a type of logic where each value can take on a range of truth values.
+This type of logic deals with degrees of truth in the rules it forms, each expression
+in the language can take on many values and all rules might fire to some degree.
+
+Fuzzy logic then is well suited for situations where we want to use expressions that
+a human might use. For example, in first order logic we can express things like "The
+car is traveling at a speed over 50km/h", this is all well and good, but in most regular
+conversations humans would not express them self like this. Instead humans would use
+a sentence like "The car is traveling quite fast". This sentence is hard to represent
+in first order logic since we have a couple of variables which does not have a single 
+value. "Fast" is not something a computer can work with straight out of the box since 
+"Fast" might be a range of values. This is where fuzzy logic comes in. In fuzzy logic
+we can explain "Fast" as a range of values and when asked if the car is traveling "fast"
+we can evaluate that to a degree of truth. The car might not be traveling that fast and
+so our rules might say that it is fast to a degree of "0.2".
+
+In this project we have implemented fuzzy logic with the aim of controlling mice which
+are running around a designated area. We read in rules written in a special format \TODO{
+link to rule format} and then use those rules to control the mice with fuzzy logic.
