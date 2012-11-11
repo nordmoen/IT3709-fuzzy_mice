@@ -39,3 +39,22 @@ surrounded by pretenses represents either a fuzzy expression or if there is an
 and between to such expressions a conditional statement.
 
 \subsection{Fuzzy Inference}\label{fuzzy inference}
+To make use of the runtime structure we have to implement some sort of inference
+which can use the rules created to give output in some form. This is done by
+doing inference on the input. In our cases we get input from the simulator
+telling us about the variables in the system. Then we use either Mamdani or
+Sugeno inference to interpret those variables and what they mean. Our inference
+returns the action most associated with the rules or if no rules fires at all
+we throw an exception which must be dealt with other places.
+
+For Mamdani inference we go over a certain number of steps in the output space
+and sum up all the values and their degree from all the rules. To find out
+whether or not a certain value is within a certain set we decided that we would
+try all of them and select the one which has the highest degree of "ownership"
+of that value. This is slow, but it is easy to think about and easy to implement.
+
+Since Sugeno inference is slightly easier all we have to do is just for each result
+set that we get back we take the middle value and sum up all these values. This
+is much faster, but it does lack the resolution of Mamdani. With the simple rules
+that we have tried for our mice, Mamdani works fine, but if this would become a
+problem we could easily switch to Sugeno.

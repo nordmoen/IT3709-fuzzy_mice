@@ -4,6 +4,9 @@
 Below is a description of our fuzzy rule format, each rule described in this
 format should be possible to parse with our current implementation.
 
+All rules have to be on a single line for the parsing to work. This is a flaw
+with the parsing mechanisms used and not the runtime structures created.
+
 \lstset{frame=single, breaklines=true}
 \begin{lstlisting}[label=lst: bnf, caption=BNF of our rules]
 IF		= if COND_ST then action is ACTION

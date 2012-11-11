@@ -42,7 +42,10 @@ class FuzzyReasoner(object):
         res = map(lambda x: x.eval(**kwargs), self.if_sts)
         above = [k*my for (_, _, my, k) in res]
         below = [my for (_, _, my, _) in res]
-        return sum(above) / sum(below)
+        ret = sum(below)
+        if ret == 0:
+            raise NoConditionalFired(self.if_sts)
+        return sum(above) / ret
 
     def eval(self, mamdani = True, **kwargs):
         if mamdani:
