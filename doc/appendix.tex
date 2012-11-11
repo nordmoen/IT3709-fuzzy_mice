@@ -1,0 +1,39 @@
+\appendix
+
+\section{Rule parsing}\label{rule parsing}
+Below is a description of our fuzzy rule format, each rule described in this
+format should be possible to parse with our current implementation.
+
+\lstset{frame=single, breaklines=true}
+\begin{lstlisting}[label=lst: bnf, caption=BNF of our rules]
+IF		= if COND_ST then action is ACTION
+COND_ST		= (COND_ST [and|or] COND_ST) | (FUZZY_EXPR)
+FUZZY_EXPR	= LINGVAR [is|not] VAR_NAME
+ACTION		= VAR_NAME
+LINGVAR		= [a-z]+
+VAR_NAME	= [a-z]+
+\end{lstlisting}
+
+\section{Example rules}\label{example rules}
+
+\begin{lstlisting}[label=lst:example rules, caption=Example rules representing
+project risks]
+define lingvar funding: inadequate, marginal, adequate
+define lingvar staffing: small, large
+define lingvar risk: low, normal, high
+
+define fuzzyset funding.inadequate: grade = [(28, 1), (43, 0)]
+define fuzzyset funding.marginal: triangle = [(28, 0), (70, 1), (112, 0)]
+define fuzzyset funding.adequate: grade = [(84, 0), (112, 1)]
+
+define fuzzyset staffing.small: grade = [(33, 1), (64, 0)]
+define fuzzyset staffing.large: grade = [(44, 0), (66, 1)]
+
+define fuzzyset risk.low: grade = [(20, 1), (40, 0)]
+define fuzzyset risk.normal: triangle = [(20, 0), (50, 1), (80, 0)]
+define fuzzyset risk.high: grade = [(60, 0), (80, 1)]
+
+if ((funding is adequate) or (staffing is small)) then risk is low
+if ((funding is marginal) and (staffing is large)) then risk is normal
+if (funding is inadequate) then risk is high
+\end{lstlisting}

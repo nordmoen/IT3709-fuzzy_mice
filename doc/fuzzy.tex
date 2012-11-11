@@ -1,0 +1,41 @@
+\section{Fuzzy logic}\label{fuzzy logic}
+In this section we will describe how our fuzzy logic was implemented and try to
+give some arguments for some of the decisions that we made to arrive
+at this point.
+
+Our fuzzy logic is divided into three parts. We have the rule parsing which as
+the name implies parses a specific set of rules and converts them into a runtime
+structure. The runtime structure is tasked with representing the fuzzy logic and
+letting other parts of our code interact to get results back. The runtime structure
+consists of three parts, the "if statement", the "conditional statement" and
+the "fuzzy expression". The fuzzy expression consists internally of fuzzy sets
+which contains the knowledge about how rules should be divided into sets of truth
+values. The last part of the fuzzy logic is the "reasoner" which contains two 
+methods for inference, Mamdani and Sugeno.
+
+\subsection{Runtime structure}\label{runtime structure}
+As stated the runtime structure consists of three parts, each corresponding to
+a different statement in our rule parsing(see \ref{rule parsing}). To be able
+to parse as diverse rules as possible we designed the runtime structure around
+the notion of generality. Each rule is broken down into separate pieces and for
+each such piece we create a separate runtime structure to keep track of what
+is going on. When we evaluate a rule we propagate the necessary information
+down trough all the structures before we are left with nothing but fuzzy expressions.
+
+The top layer of the structure is the if statements, these represent individual
+rules which lead to a result. The if statement is what the outside world sees
+of our structure and it is the only place to interact with. The if statement
+consists of conditional expressions which hold either a fuzzy expression or
+a concatenation of conditional expressions. The bottom layer of the structure
+is the fuzzy expressions which holds the variables and the fuzzy sets to evaluate
+those variables against. The fuzzy sets is a structure which can evaluate whether
+a value is within its range and if so to what degree. For this project
+we support sets representing triangles, trapezoids and simple gradients.
+
+In appendix \ref{example rules} we have an example of what the runtime structure
+has to support. The "define fuzzyset" lines defines fuzzy sets as described above.
+The lines beginning with "if" represents a complete if statement. An expression
+surrounded by pretenses represents either a fuzzy expression or if there is an
+and between to such expressions a conditional statement.
+
+\subsection{Fuzzy Inference}\label{fuzzy inference}
