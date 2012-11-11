@@ -1,0 +1,48 @@
+\section{Reflections and Results}\label{reflections and results}
+In this last section we will briefly reflect on the project, what we have
+done and then we will move on to the results of our simulations and what can
+possibly interpreted from that.
+
+\subsection{Reflection}\label{reflection}
+In this project we have used fuzzy logic to implements fuzzy rules which have
+controlled simulated mice. The challenge with this project has been how to
+represent the fuzzy logic in a runtime structure. With this in place most of
+the pieces was done, the inference mechanisms then just had to do their job
+and get the final output done. When creating the runtime structure we had to
+think about how to get different rules to work together, but when we managed
+to create conditional statements which could be weaved together it fell into
+place.
+
+\subsection{Results}\label{results}
+From what we have seen in a number of different runs is that the rules work
+quite well. The challenge then is creating "intelligent" fuzzy rules. In some
+sense this is where our project is lacking, we have devoted much time to
+get the fuzzy logic up and running and we have used some time to get the
+simulation to work. We can easily see that the rules we have work and we
+can see that the inference and everything work together, but to call
+it intelligent is a stretch.
+
+In the different runs we can see that our rules fire, by seeing the mice
+hunt and flee from enemies. We can see that sometimes no action is selected
+and mice start fighting even though that might not have been the brightest thing
+to do. Since the area is quite limited much fighting is going on at the start
+because no mice really cares about what is happening, but when the dust settles
+and there are only a few mice left, we can see that the strong start hunting
+the weak. Sometimes we see the weak try to flee, and sometimes they try to
+fight. When this is happening most of the behavior is down to the minimalistic
+rules that we have used. With more advanced rules more "intelligent" behavior
+should be observed.
+
+We have laid the foundation of what have been a very good fuzzy logic
+implementation which has proven it self through our simulations.
+
+\subsection{Future work}\label{future work}
+There are many aspects of our fuzzy logic which can be improved chief among
+them is improved parsing. What our implementation lacks is the power to
+parse arbitrarily created if statements, in its current form we can do what
+has been required of us, but it is not as good as it can be.
+
+We would also like to improve how rules are parsed using Mamdani inference as
+it stands now we have some restrictions that can hold the inference back compared
+to what it should be able to do. The Sugeno inference work very well, much because
+it's easier to implement, but also because our technique was a bit more elegant.
