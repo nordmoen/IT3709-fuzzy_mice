@@ -35,3 +35,4 @@ pip-log.txt
 *.log
 *.out
 *.toc
+*.gz

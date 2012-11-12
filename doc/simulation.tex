@@ -11,12 +11,15 @@ to base most of our simulation.
 We have extended the example with fuzzy logic and given each mouse health, strength and speed
 which controls different aspects of the mice and the fuzzy logic.
 
-From the code that we reused from Qt each mice performs one action three times a
-second. In this time each mouse tries to stay within a certain range of the middle,
-but are controlled by our fuzzy logic, if any of the rules fire. Each mouse
-has a "fuzzy reasoner" which deals with the inference. This reasoner has been created
+From the code that we reused from Qt, each mice performs an action 30 times per
+second (specifically 1000/33ms intervals). In this time each mouse tries to stay within
+a certain distance to the middle, but are controlled by our fuzzy logic, if any of the rules fire.
+Each mouse has a "fuzzy reasoner" which deals with the inference. This reasoner has been created
 with the interpreted fuzzy rules and takes a certain number of arguments. We then
 identify the two strongest mice within view and feed the reasoner the values associated
 with the other mice and our own health. The reasoner then uses the fuzzy rules and
-evaluates which action should be taken. With these actions in hand the mice locates
-either the most dangerous of the two enemies or the weakest and then goes to work.
+evaluates which action should be taken. This gives us one action per mouse, 
+which are then prioritized by type: fleeing is more important than attacking or ignoring, 
+and attacking is more important than ignoring. Knowing which mouse to react to, we
+then steer the mouse towards, or away from the most important mouse we identified.
+If we decide to ignore both mice, we just continue straight ahead.
