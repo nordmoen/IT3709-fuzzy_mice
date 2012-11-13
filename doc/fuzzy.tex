@@ -27,7 +27,7 @@ rules which lead to a result. The if-statement is what the outside world sees
 of our structure and it is the only place to interact with. The if-statement
 consists of conditional expressions which hold either a fuzzy expression or
 a concatenation of conditional expressions. The bottom layer of the structure
-is the fuzzy expressions which holds the variables and the fuzzy sets to evaluate
+is the fuzzy expressions, which holds the variables and the fuzzy sets to evaluate
 those variables against. The fuzzy sets are structures which can evaluate whether
 a value is within their range and, if so, to what degree. For this project
 we support sets representing triangles, trapezoids and simple gradients.
@@ -53,8 +53,7 @@ whether or not a certain value is within a certain set we decided that we would
 try all of them and select the one which has the highest degree of "ownership"
 of that value. This is slow, but it is easy to think about and easy to implement.
 
-Since Sugeno inference is slightly easier all we have to do is just for each result
-set that we get back we take the middle value and sum up all these values. This
-is much faster, but it does lack the resolution of Mamdani. With the simple rules
-that we have tried for our mice, Mamdani works fine, but if this would become a
-problem we could easily switch to Sugeno.
+Since Sugeno inference is slightly easier, all we have to do is to sum up the middle
+value from each result we get. This is much faster, but it does lack the resolution
+of Mamdani. With the simple rules that we have tried for our mice, Mamdani works
+fine, but if this would become a problem we could easily switch to Sugeno.

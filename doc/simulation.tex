@@ -3,12 +3,11 @@ The Qt\footnote{\url{http://qt-project.org/}} simulation is not necessarily the
 meat of our project, but it's the part that glues it all together and helps us
 visualize how the inference is working.
 
-Most of the simulation is based on the colliding mice example created by Qt
-for its C++ UI framework. We have used the PySide\footnote{\url{http://qt-project.org/wiki/PySide}}
-bindings and used the colliding mice example\footnote{\url{http://qt.gitorious.org/pyside/pyside-examples/blobs/bc97d0b794dfd153462ac409569d73dd991b4e1f/examples/graphicsview/collidingmice/collidingmice.py}}
-to base most of our simulation.
+Most of the simulation is based on the colliding mice example\footnote{\url{http://qt.gitorious.org/pyside/pyside-examples/blobs/bc97d0b794dfd153462ac409569d73dd991b4e1f/examples/graphicsview/collidingmice/collidingmice.py}}
+created by Qt for its C++ UI framework. In combination with the PySide\footnote{\url{http://qt-project.org/wiki/PySide}}
+bindings, that allowed us to use python with Qt, we had a simple framework to work with.
 
-The example features several mice running around on a small field, turning around when they
+The example features several mice running around on a small cheese-field, turning around when they
 reach the edge. We have extended it with fuzzy logic and given each mouse health, strength and speed,
 to control different aspects of the mice and the fuzzy logic. Whenever two or more mice collide with each
 other, a fight will occur, and damages are dealt semi-randomly based on the strength of each mouse.
