@@ -7,7 +7,7 @@ Our fuzzy logic is divided into three parts. We have the rule parsing which, as
 the name implies, parses a specific set of rules and converts them into a runtime
 structure. The runtime structure is tasked with representing the fuzzy logic and
 letting other parts of our code interact to get results back. The runtime structure
-consists of three parts, the "if statement", the "conditional statement" and
+consists of three parts, the "if-statement", the "conditional statement" and
 the "fuzzy expression". The fuzzy expression consists internally of fuzzy sets
 which contains the knowledge about how rules should be divided into sets of truth
 values. The last part of the fuzzy logic is the "reasoner" which contains two 
@@ -22,14 +22,14 @@ each such piece we create a separate runtime structure to keep track of what
 is going on. When we evaluate a rule we propagate the necessary information
 down trough all the structures before we are left with nothing but fuzzy expressions.
 
-The top layer of the structure is the if statements, these represent individual
-rules which lead to a result. The if statement is what the outside world sees
-of our structure and it is the only place to interact with. The if statement
+The top layer of the structure is the if-statements, these represent individual
+rules which lead to a result. The if-statement is what the outside world sees
+of our structure and it is the only place to interact with. The if-statement
 consists of conditional expressions which hold either a fuzzy expression or
 a concatenation of conditional expressions. The bottom layer of the structure
 is the fuzzy expressions which holds the variables and the fuzzy sets to evaluate
-those variables against. The fuzzy sets is a structure which can evaluate whether
-a value is within its range and if so to what degree. For this project
+those variables against. The fuzzy sets are structures which can evaluate whether
+a value is within their range and, if so, to what degree. For this project
 we support sets representing triangles, trapezoids and simple gradients.
 
 In appendix \ref{example rules} we have an example of what the runtime structure
